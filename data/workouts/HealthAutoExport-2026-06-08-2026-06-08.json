@@ -1,0 +1,122 @@
+{
+  "data" : {
+    "workouts" : [
+      {
+        "maxSpeed" : {
+          "qty" : 9.1222639691023275,
+          "units" : "km"
+        },
+        "activeEnergyBurned" : {
+          "qty" : 377.2629119999998,
+          "units" : "kJ"
+        },
+        "duration" : 625.97135400772095,
+        "temperature" : {
+          "units" : "degC",
+          "qty" : 4.401984214780498
+        },
+        "avgSpeed" : {
+          "qty" : 7.2454603954796761,
+          "units" : "km"
+        },
+        "speed" : {
+          "units" : "km\/hr",
+          "qty" : 7.4296084340766768
+        },
+        "start" : "2026-06-08 05:34:45 -0700",
+        "activeEnergy" : [
+          {
+            "qty" : 30.070779776401888,
+            "date" : "2026-06-08 05:34:45 -0700",
+            "source" : "iPhone",
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-08 05:35:45 -0700",
+            "qty" : 40.387535699994281,
+            "units" : "kJ",
+            "source" : "iPhone"
+          },
+          {
+            "date" : "2026-06-08 05:36:45 -0700",
+            "qty" : 41.415848244983358,
+            "source" : "iPhone",
+            "units" : "kJ"
+          },
+          {
+            "source" : "iPhone",
+            "units" : "kJ",
+            "qty" : 36.225142542429602,
+            "date" : "2026-06-08 05:37:45 -0700"
+          },
+          {
+            "qty" : 35.605182431418491,
+            "date" : "2026-06-08 05:38:45 -0700",
+            "source" : "iPhone",
+            "units" : "kJ"
+          },
+          {
+            "qty" : 32.052526952225982,
+            "date" : "2026-06-08 05:39:45 -0700",
+            "source" : "iPhone",
+            "units" : "kJ"
+          },
+          {
+            "source" : "iPhone",
+            "qty" : 32.521959702939128,
+            "units" : "kJ",
+            "date" : "2026-06-08 05:40:45 -0700"
+          },
+          {
+            "source" : "iPhone",
+            "date" : "2026-06-08 05:41:45 -0700",
+            "qty" : 33.76856255449708,
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-08 05:42:45 -0700",
+            "units" : "kJ",
+            "qty" : 40.779804248921558,
+            "source" : "iPhone"
+          },
+          {
+            "qty" : 42.659665292212075,
+            "date" : "2026-06-08 05:43:45 -0700",
+            "units" : "kJ",
+            "source" : "iPhone"
+          },
+          {
+            "qty" : 11.775904553976543,
+            "source" : "iPhone",
+            "date" : "2026-06-08 05:44:45 -0700",
+            "units" : "kJ"
+          }
+        ],
+        "end" : "2026-06-08 05:45:11 -0700",
+        "metadata" : {
+
+        },
+        "location" : "Outdoor",
+        "elevationUp" : {
+          "qty" : 10.880000000000001,
+          "units" : "m"
+        },
+        "isIndoor" : false,
+        "distance" : {
+          "qty" : 1.2918672364517114,
+          "units" : "km"
+        },
+        "humidity" : {
+          "units" : "%",
+          "qty" : 70
+        },
+        "id" : "A9DBE9F2-FD31-4210-877C-08DFF68D419E",
+        "intensity" : {
+          "units" : "kcal\/hr·kg",
+          "qty" : 7.1126048982127665
+        },
+        "name" : "Outdoor Run"
+      }
+    ]
+  }
+}

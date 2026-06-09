@@ -1,0 +1,204 @@
+:root {
+  color: oklch(91% 0.01 260);
+  background: oklch(7% 0.004 260);
+  font-family:
+    ui-monospace, "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", monospace;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --cell: 18px;
+  --gap: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.app {
+  margin: 0 auto;
+  max-width: 1240px;
+  padding: 18px 10px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 2.8rem;
+  line-height: 0.95;
+  margin-bottom: 0;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 0;
+}
+
+.year-card {
+  background: oklch(7.5% 0.004 260);
+  border-radius: 2px;
+  margin-bottom: 22px;
+  overflow: visible;
+  padding: 0 0 8px;
+}
+
+.year-card-header {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.year-card-header h2 span,
+.year-total span {
+  color: oklch(58% 0.01 260);
+  font-weight: 600;
+}
+
+.year-total {
+  align-items: center;
+  color: oklch(73% 0.01 260);
+  display: flex;
+  font-size: 1rem;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.legend {
+  align-items: center;
+  color: oklch(42% 0.01 260);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 600;
+  gap: 4px;
+  margin-left: 10px;
+}
+
+.legend-box {
+  border-radius: 1px;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+
+.calendar-wrap {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 20px 1fr;
+  overflow: visible;
+  padding-bottom: 2px;
+}
+
+.weekday-labels {
+  color: oklch(42% 0.01 260);
+  display: grid;
+  font-size: 0.82rem;
+  gap: var(--gap);
+  grid-template-rows: repeat(7, var(--cell));
+  line-height: var(--cell);
+  padding-top: 1px;
+}
+
+.calendar-stack {
+  display: grid;
+  gap: 10px;
+  width: max-content;
+}
+
+.calendar-grid {
+  display: grid;
+  gap: var(--gap);
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell));
+  overflow: visible;
+  width: max-content;
+}
+
+.day-cell {
+  border-radius: 1px;
+  display: block;
+  height: var(--cell);
+  padding: 0;
+  position: relative;
+  transition:
+    background-color 160ms ease-out,
+    box-shadow 160ms ease-out,
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: var(--cell);
+}
+
+.intensity-0 {
+  background: oklch(17% 0.004 260);
+}
+
+.intensity-1 {
+  background: oklch(28% 0.006 260);
+}
+
+.intensity-2 {
+  background: oklch(42% 0.006 260);
+}
+
+.intensity-3 {
+  background: oklch(55% 0.006 260);
+}
+
+.intensity-4 {
+  background: oklch(68% 0.006 260);
+}
+
+.day-cell[data-tooltip]:not([data-tooltip=""]):hover {
+  box-shadow: 0 0 0 1px oklch(90% 0.01 260), 0 10px 24px oklch(0% 0 0 / 55%);
+  transform: scale(1.45);
+  z-index: 5;
+}
+
+.day-cell[data-tooltip]:not([data-tooltip=""]):hover::after {
+  background: oklch(92% 0.008 260);
+  border-radius: 4px;
+  bottom: calc(100% + 10px);
+  color: oklch(12% 0.006 260);
+  content: attr(data-tooltip);
+  font-size: 0.78rem;
+  font-weight: 800;
+  left: 50%;
+  line-height: 1;
+  padding: 7px 8px;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%) scale(0.8);
+  transform-origin: bottom center;
+  white-space: nowrap;
+}
+
+.month-labels {
+  color: oklch(42% 0.01 260);
+  display: grid;
+  font-size: 0.85rem;
+  gap: var(--gap);
+  grid-template-columns: repeat(var(--weeks), var(--cell));
+  line-height: 1;
+}
+
+@media (max-width: 760px) {
+  .app {
+    padding: 16px 8px;
+  }
+
+  .year-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+}

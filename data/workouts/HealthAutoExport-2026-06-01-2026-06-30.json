@@ -1,0 +1,522 @@
+{
+  "data" : {
+    "workouts" : [
+      {
+        "maxSpeed" : {
+          "qty" : 9.1222639691023275,
+          "units" : "km"
+        },
+        "activeEnergyBurned" : {
+          "qty" : 377.2629119999998,
+          "units" : "kJ"
+        },
+        "duration" : 625.97135400772095,
+        "temperature" : {
+          "qty" : 4.401984214780498,
+          "units" : "degC"
+        },
+        "avgSpeed" : {
+          "qty" : 7.2454603954796761,
+          "units" : "km"
+        },
+        "speed" : {
+          "qty" : 7.4296084340766768,
+          "units" : "km\/hr"
+        },
+        "start" : "2026-06-08 05:34:45 -0700",
+        "activeEnergy" : [
+          {
+            "date" : "2026-06-08 05:34:45 -0700",
+            "source" : "iPhone",
+            "qty" : 30.070779776401888,
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-08 05:35:45 -0700",
+            "source" : "iPhone",
+            "units" : "kJ",
+            "qty" : 40.387535699994281
+          },
+          {
+            "source" : "iPhone",
+            "qty" : 41.415848244983358,
+            "date" : "2026-06-08 05:36:45 -0700",
+            "units" : "kJ"
+          },
+          {
+            "units" : "kJ",
+            "source" : "iPhone",
+            "qty" : 36.225142542429602,
+            "date" : "2026-06-08 05:37:45 -0700"
+          },
+          {
+            "source" : "iPhone",
+            "units" : "kJ",
+            "date" : "2026-06-08 05:38:45 -0700",
+            "qty" : 35.605182431418491
+          },
+          {
+            "date" : "2026-06-08 05:39:45 -0700",
+            "units" : "kJ",
+            "qty" : 32.052526952225982,
+            "source" : "iPhone"
+          },
+          {
+            "units" : "kJ",
+            "date" : "2026-06-08 05:40:45 -0700",
+            "source" : "iPhone",
+            "qty" : 32.521959702939128
+          },
+          {
+            "units" : "kJ",
+            "source" : "iPhone",
+            "qty" : 33.76856255449708,
+            "date" : "2026-06-08 05:41:45 -0700"
+          },
+          {
+            "source" : "iPhone",
+            "date" : "2026-06-08 05:42:45 -0700",
+            "qty" : 40.779804248921558,
+            "units" : "kJ"
+          },
+          {
+            "qty" : 42.659665292212075,
+            "units" : "kJ",
+            "source" : "iPhone",
+            "date" : "2026-06-08 05:43:45 -0700"
+          },
+          {
+            "date" : "2026-06-08 05:44:45 -0700",
+            "qty" : 11.775904553976543,
+            "units" : "kJ",
+            "source" : "iPhone"
+          }
+        ],
+        "end" : "2026-06-08 05:45:11 -0700",
+        "metadata" : {
+
+        },
+        "location" : "Outdoor",
+        "elevationUp" : {
+          "units" : "m",
+          "qty" : 10.880000000000001
+        },
+        "isIndoor" : false,
+        "distance" : {
+          "qty" : 1.2918672364517114,
+          "units" : "km"
+        },
+        "humidity" : {
+          "units" : "%",
+          "qty" : 70
+        },
+        "id" : "A9DBE9F2-FD31-4210-877C-08DFF68D419E",
+        "intensity" : {
+          "qty" : 7.1126048982127665,
+          "units" : "kcal\/hr·kg"
+        },
+        "name" : "Outdoor Run"
+      },
+      {
+        "distance" : {
+          "qty" : 1.1488246695704039,
+          "units" : "km"
+        },
+        "maxHeartRate" : {
+          "qty" : 155,
+          "units" : "bpm"
+        },
+        "temperature" : {
+          "units" : "degC",
+          "qty" : 4.7899999999978036
+        },
+        "activeEnergy" : [
+          {
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-07 07:37:53 -0700",
+            "qty" : 35.594328789251328,
+            "units" : "kJ"
+          },
+          {
+            "units" : "kJ",
+            "qty" : 34.208652186848305,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-07 07:38:53 -0700"
+          },
+          {
+            "units" : "kJ",
+            "qty" : 35.874039305589235,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-07 07:39:53 -0700"
+          },
+          {
+            "date" : "2026-06-07 07:40:53 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "units" : "kJ",
+            "qty" : 32.010425419138713
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "qty" : 39.205272650688194,
+            "date" : "2026-06-07 07:41:53 -0700",
+            "units" : "kJ"
+          },
+          {
+            "qty" : 38.858162003932449,
+            "date" : "2026-06-07 07:42:53 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "units" : "kJ"
+          },
+          {
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch",
+            "qty" : 29.824115098467576,
+            "date" : "2026-06-07 07:43:53 -0700"
+          },
+          {
+            "qty" : 25.501849113857329,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-07 07:44:53 -0700",
+            "units" : "kJ"
+          },
+          {
+            "units" : "kJ",
+            "qty" : 35.444822322463651,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-07 07:45:53 -0700"
+          },
+          {
+            "date" : "2026-06-07 07:46:53 -0700",
+            "qty" : 23.918100988926909,
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch"
+          }
+        ],
+        "activeEnergyBurned" : {
+          "qty" : 330.05840944007059,
+          "units" : "kJ"
+        },
+        "heartRate" : {
+          "avg" : {
+            "units" : "bpm",
+            "qty" : 138.2959178292293
+          },
+          "min" : {
+            "qty" : 97,
+            "units" : "bpm"
+          },
+          "max" : {
+            "units" : "bpm",
+            "qty" : 155
+          }
+        },
+        "avgHeartRate" : {
+          "units" : "bpm",
+          "qty" : 138.2959178292293
+        },
+        "isIndoor" : false,
+        "start" : "2026-06-07 07:37:53 -0700",
+        "id" : "E6234B64-36E7-4E61-B8C1-AA6E23E41BC0",
+        "avgSpeed" : {
+          "units" : "km",
+          "qty" : 6.9877228532320244
+        },
+        "heartRateData" : [
+          {
+            "Avg" : 112.67204301075267,
+            "date" : "2026-06-07 07:37:53 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 97,
+            "Max" : 122.99999999999999,
+            "units" : "bpm"
+          },
+          {
+            "Avg" : 128.51960784313729,
+            "units" : "bpm",
+            "source" : "Ryan’s Apple Watch",
+            "Max" : 134,
+            "Min" : 120,
+            "date" : "2026-06-07 07:38:53 -0700"
+          },
+          {
+            "Avg" : 137.29499999999999,
+            "date" : "2026-06-07 07:39:53 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 134,
+            "units" : "bpm",
+            "Max" : 140
+          },
+          {
+            "Min" : 141,
+            "Max" : 147,
+            "date" : "2026-06-07 07:40:53 -0700",
+            "units" : "bpm",
+            "source" : "Ryan’s Apple Watch",
+            "Avg" : 144.54320987654319
+          },
+          {
+            "Max" : 150,
+            "date" : "2026-06-07 07:41:53 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 146,
+            "units" : "bpm",
+            "Avg" : 147.61979166666666
+          },
+          {
+            "Min" : 145,
+            "Max" : 153,
+            "source" : "Ryan’s Apple Watch",
+            "Avg" : 148.6887755102041,
+            "units" : "bpm",
+            "date" : "2026-06-07 07:42:53 -0700"
+          },
+          {
+            "date" : "2026-06-07 07:43:53 -0700",
+            "Max" : 155,
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 150,
+            "Avg" : 151.41237113402062,
+            "units" : "bpm"
+          },
+          {
+            "date" : "2026-06-07 07:44:53 -0700",
+            "Min" : 134,
+            "units" : "bpm",
+            "source" : "Ryan’s Apple Watch",
+            "Max" : 149,
+            "Avg" : 141.509900990099
+          },
+          {
+            "units" : "bpm",
+            "date" : "2026-06-07 07:45:53 -0700",
+            "Avg" : 141.28,
+            "Min" : 138,
+            "Max" : 147,
+            "source" : "Ryan’s Apple Watch"
+          },
+          {
+            "Max" : 138,
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 122.99999999999999,
+            "units" : "bpm",
+            "date" : "2026-06-07 07:46:53 -0700",
+            "Avg" : 129.41847826086953
+          }
+        ],
+        "metadata" : {
+
+        },
+        "location" : "Outdoor",
+        "intensity" : {
+          "qty" : 6.8892494302251643,
+          "units" : "kcal\/hr·kg"
+        },
+        "duration" : 594.09127795696259,
+        "humidity" : {
+          "qty" : 66,
+          "units" : "%"
+        },
+        "speed" : {
+          "qty" : 6.9615040043611929,
+          "units" : "km\/hr"
+        },
+        "maxSpeed" : {
+          "qty" : 9.1485464689598874,
+          "units" : "km"
+        },
+        "end" : "2026-06-07 07:47:47 -0700",
+        "name" : "Outdoor Run"
+      },
+      {
+        "activeEnergyBurned" : {
+          "units" : "kJ",
+          "qty" : 564.38394400000004
+        },
+        "activeEnergy" : [
+          {
+            "units" : "kJ",
+            "date" : "2026-06-06 06:38:07 -0700",
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "qty" : 38.896360995359977
+          },
+          {
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "units" : "kJ",
+            "qty" : 44.904066906292869,
+            "date" : "2026-06-06 06:39:07 -0700"
+          },
+          {
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "qty" : 47.684922380485382,
+            "date" : "2026-06-06 06:40:07 -0700"
+          },
+          {
+            "date" : "2026-06-06 06:41:07 -0700",
+            "units" : "kJ",
+            "qty" : 41.748299144000811,
+            "source" : "Ryan’s Apple Watch|Nike Run Club"
+          },
+          {
+            "date" : "2026-06-06 06:42:07 -0700",
+            "qty" : 42.41668135125645,
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch|Nike Run Club"
+          },
+          {
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "units" : "kJ",
+            "date" : "2026-06-06 06:43:07 -0700",
+            "qty" : 42.448571613566067
+          },
+          {
+            "date" : "2026-06-06 06:44:07 -0700",
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "qty" : 38.94416790997024
+          },
+          {
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "date" : "2026-06-06 06:45:07 -0700",
+            "qty" : 49.204787445710338,
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-06 06:46:07 -0700",
+            "qty" : 35.591399916071595,
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch|Nike Run Club"
+          },
+          {
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "qty" : 45.932848541963601,
+            "units" : "kJ",
+            "date" : "2026-06-06 06:47:07 -0700"
+          },
+          {
+            "date" : "2026-06-06 06:48:07 -0700",
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "units" : "kJ",
+            "qty" : 32.565121189437157
+          },
+          {
+            "qty" : 42.67278502583234,
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "units" : "kJ",
+            "date" : "2026-06-06 06:49:07 -0700"
+          },
+          {
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "date" : "2026-06-06 06:50:07 -0700",
+            "qty" : 28.065686389495575,
+            "units" : "kJ"
+          },
+          {
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch|Nike Run Club",
+            "date" : "2026-06-06 06:51:07 -0700",
+            "qty" : 28.03228403542381
+          },
+          {
+            "date" : "2026-06-06 06:52:07 -0700",
+            "units" : "kJ",
+            "qty" : 7.7821771551337697,
+            "source" : "Ryan’s Apple Watch|Nike Run Club"
+          }
+        ],
+        "metadata" : {
+
+        },
+        "distance" : {
+          "units" : "km",
+          "qty" : 1.8237476530605419
+        },
+        "name" : "Outdoor Run",
+        "isIndoor" : false,
+        "duration" : 856.3529999256134,
+        "end" : "2026-06-06 06:52:26 -0700",
+        "location" : "Outdoor",
+        "start" : "2026-06-06 06:38:07 -0700",
+        "speed" : {
+          "qty" : 7.6668051044233616,
+          "units" : "km\/hr"
+        },
+        "id" : "38C56627-7A11-472E-B3C8-B936D1CA9534"
+      },
+      {
+        "location" : "Outdoor",
+        "end" : "2026-06-05 05:50:00 -0700",
+        "activeEnergy" : [
+          {
+            "date" : "2026-06-05 05:42:13 -0700",
+            "qty" : 54.193738228165088,
+            "source" : "Nike Run Club",
+            "units" : "kJ"
+          },
+          {
+            "source" : "Nike Run Club",
+            "date" : "2026-06-05 05:43:13 -0700",
+            "qty" : 56.308180969517458,
+            "units" : "kJ"
+          },
+          {
+            "source" : "Nike Run Club",
+            "units" : "kJ",
+            "date" : "2026-06-05 05:44:13 -0700",
+            "qty" : 38.795388419753884
+          },
+          {
+            "date" : "2026-06-05 05:45:13 -0700",
+            "units" : "kJ",
+            "qty" : 44.017103496651302,
+            "source" : "Nike Run Club"
+          },
+          {
+            "source" : "Nike Run Club",
+            "qty" : 52.515451577253835,
+            "date" : "2026-06-05 05:46:13 -0700",
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-05 05:47:13 -0700",
+            "qty" : 51.518623372532005,
+            "source" : "Nike Run Club",
+            "units" : "kJ"
+          },
+          {
+            "source" : "Nike Run Club",
+            "date" : "2026-06-05 05:48:13 -0700",
+            "units" : "kJ",
+            "qty" : 27.601948775146624
+          },
+          {
+            "source" : "Nike Run Club",
+            "date" : "2026-06-05 05:49:13 -0700",
+            "units" : "kJ",
+            "qty" : 17.162693160979813
+          }
+        ],
+        "start" : "2026-06-05 05:42:13 -0700",
+        "name" : "Outdoor Run",
+        "id" : "C3836F61-DFBB-4A5C-B962-888689450FF8",
+        "isIndoor" : false,
+        "activeEnergyBurned" : {
+          "units" : "kJ",
+          "qty" : 342.11312800000002
+        },
+        "duration" : 461.22699999809265,
+        "distance" : {
+          "qty" : 1.0080827013074887,
+          "units" : "km"
+        },
+        "speed" : {
+          "qty" : 7.8683548983948617,
+          "units" : "km\/hr"
+        },
+        "metadata" : {
+
+        }
+      }
+    ]
+  }
+}

@@ -203,6 +203,7 @@ function RouteMap({
 
   return (
     <section className="route-map" aria-label="Running routes map">
+      <h3 className="visual-heading">Routes</h3>
       <svg className="route-map-svg" viewBox={`0 0 ${ROUTE_MAP_WIDTH} ${ROUTE_MAP_HEIGHT}`} role="img">
         <title>Running routes</title>
         {routes.map((route) => {
@@ -279,6 +280,7 @@ function MetricGraph({
 
   return (
     <section className="metric-graph" aria-label="Relative running metrics graph">
+      <h3 className="visual-heading">Metrics</h3>
       <svg className="metric-graph-svg" viewBox={`0 0 ${METRIC_GRAPH_WIDTH} ${METRIC_GRAPH_HEIGHT}`} role="img">
         <title>Relative yearly range for distance, time, BPM, power, elevation, and speed</title>
         <g className="metric-grid" aria-hidden="true">

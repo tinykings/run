@@ -262,12 +262,39 @@ h3 {
 }
 
 .route-map {
-  align-items: center;
-  display: flex;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.visual-heading {
+  color: oklch(50% 0.01 260);
+  font-size: 0.7rem;
+  line-height: 1;
+  margin: 9px 10px 0;
 }
 
 .route-map-svg {
+  align-self: center;
   display: block;
+  height: auto;
+  width: 100%;
+}
+
+.metric-graph {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  padding: 0 10px 8px;
+}
+
+.metric-graph .visual-heading {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.metric-graph-svg {
+  display: block;
+  align-self: center;
   height: auto;
   width: 100%;
 }
@@ -348,17 +375,6 @@ h3 {
   fill: currentColor;
 }
 
-.metric-graph {
-  min-width: 0;
-  padding: 4px 10px 8px;
-}
-
-.metric-graph-svg {
-  display: block;
-  height: auto;
-  width: 100%;
-}
-
 .metric-grid line {
   stroke: oklch(14% 0.004 260);
   stroke-width: 1;
@@ -369,7 +385,7 @@ h3 {
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.35;
+  stroke-width: 0.9;
 }
 
 .metric-distance {
@@ -398,7 +414,7 @@ h3 {
 
 .metric-speed {
   color: oklch(66% 0.005 260);
-  stroke-width: 1.65;
+  stroke-width: 1.1;
 }
 
 .metric-cursor {

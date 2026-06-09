@@ -16,6 +16,7 @@ export type HealthExport = {
 
 export type HealthWorkout = {
   activeEnergyKcal?: number;
+  avgHeartRate?: number;
   averagePaceSecPerKm?: number;
   averageSpeedKmh?: number;
   distanceKm?: number;
@@ -23,6 +24,7 @@ export type HealthWorkout = {
   elevationAscendedM?: number;
   end?: string;
   humidityPercent?: number;
+  intensity?: number;
   isIndoor?: boolean;
   maxSpeedKmh?: number;
   name?: string;
@@ -38,6 +40,7 @@ export type HealthWorkout = {
 
 type HealthAutoExportWorkout = {
   activeEnergyBurned?: Quantity;
+  avgHeartRate?: Quantity;
   avgSpeed?: Quantity;
   distance?: Quantity;
   duration?: number;
@@ -45,6 +48,7 @@ type HealthAutoExportWorkout = {
   end?: string;
   humidity?: Quantity;
   id?: string;
+  intensity?: Quantity;
   isIndoor?: boolean;
   maxSpeed?: Quantity;
   name?: string;
@@ -77,6 +81,8 @@ export type RunStats = {
   totalDurationSec: number;
   totalRuns: number;
   averagePaceSecPerKm: number | null;
+  averageHeartRate: number | null;
+  averagePower: number | null;
 };
 
 const KILOJOULES_PER_KILOCALORIE = 4.184;
@@ -127,11 +133,27 @@ export function getRunStats(days: Iterable<DayRuns>): RunStats {
   let totalDistanceKm = 0;
   let totalDurationSec = 0;
   let totalRuns = 0;
+  let heartRateWeightedTotal = 0;
+  let heartRateDurationSec = 0;
+  let powerWeightedTotal = 0;
+  let powerDurationSec = 0;
 
   for (const day of days) {
     totalDistanceKm += day.distanceKm;
     totalDurationSec += day.durationSec;
     totalRuns += day.runs.length;
+
+    for (const run of day.runs) {
+      if (run.avgHeartRate !== undefined && Number.isFinite(run.avgHeartRate)) {
+        heartRateWeightedTotal += run.avgHeartRate * run.durationSec;
+        heartRateDurationSec += run.durationSec;
+      }
+
+      if (run.intensity !== undefined && Number.isFinite(run.intensity)) {
+        powerWeightedTotal += run.intensity * run.durationSec;
+        powerDurationSec += run.durationSec;
+      }
+    }
   }
 
   return {
@@ -139,6 +161,8 @@ export function getRunStats(days: Iterable<DayRuns>): RunStats {
     totalDurationSec,
     totalRuns,
     averagePaceSecPerKm: totalDistanceKm > 0 ? totalDurationSec / totalDistanceKm : null,
+    averageHeartRate: heartRateDurationSec > 0 ? heartRateWeightedTotal / heartRateDurationSec : null,
+    averagePower: powerDurationSec > 0 ? powerWeightedTotal / powerDurationSec : null,
   };
 }
 
@@ -270,6 +294,7 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
   return [
     {
       activeEnergyKcal,
+      avgHeartRate: workout.avgHeartRate?.qty,
       averagePaceSecPerKm: distanceKm > 0 ? durationSec / distanceKm : undefined,
       averageSpeedKmh: workout.avgSpeed?.qty ?? workout.speed?.qty,
       distanceKm,
@@ -277,6 +302,7 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
       elevationAscendedM: workout.elevationUp?.qty,
       end: toIsoWithOffset(workout.end),
       humidityPercent,
+      intensity: workout.intensity?.qty,
       isIndoor: workout.isIndoor ?? workout.name.includes("Indoor"),
       maxSpeedKmh: workout.maxSpeed?.qty,
       name: workout.name,

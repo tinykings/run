@@ -24,33 +24,6 @@ body {
   padding: 18px 10px;
 }
 
-.total-summary {
-  align-items: center;
-  display: flex;
-  gap: 36px;
-  justify-content: center;
-  margin: 4px auto 30px;
-  text-align: center;
-}
-
-.total-summary div {
-  display: grid;
-  gap: 4px;
-}
-
-.total-summary span {
-  color: oklch(58% 0.01 260);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.total-summary strong {
-  color: oklch(91% 0.01 260);
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
 h1,
 h2,
 h3,
@@ -75,7 +48,6 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  width: 100%;
 }
 
 .year-mark {
@@ -93,10 +65,10 @@ h2 {
 }
 
 .year-card-header {
-  align-items: flex-start;
+  align-items: baseline;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 10px 18px;
   margin-bottom: 26px;
 }
 
@@ -114,6 +86,11 @@ h2 {
   flex-wrap: wrap;
   font-weight: 700;
   gap: 8px;
+}
+
+.year-legend-row {
+  align-items: center;
+  display: flex;
   margin-top: 14px;
   padding-left: 28px;
 }
@@ -221,12 +198,14 @@ h2 {
   font-weight: 800;
   left: 50%;
   line-height: 1;
+  min-width: 92px;
   padding: 7px 8px;
   pointer-events: none;
   position: absolute;
   transform: translateX(-50%) scale(0.8);
   transform-origin: bottom center;
-  white-space: nowrap;
+  text-align: left;
+  white-space: pre;
 }
 
 .month-labels {
@@ -236,6 +215,96 @@ h2 {
   gap: var(--gap);
   grid-template-columns: repeat(var(--weeks), var(--cell));
   line-height: 1;
+}
+
+.metric-chart-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+  padding-left: 28px;
+}
+
+.metric-chart {
+  border: 1px solid oklch(17% 0.004 260);
+  border-radius: 2px;
+  min-width: 0;
+  padding: 10px 10px 8px;
+}
+
+.metric-chart-header {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.metric-chart-header span {
+  color: oklch(58% 0.01 260);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.metric-chart-header strong {
+  color: oklch(83% 0.01 260);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.metric-chart-svg {
+  display: block;
+  height: auto;
+  overflow: visible;
+  width: 100%;
+}
+
+.chart-guide line {
+  stroke: oklch(17% 0.004 260);
+  stroke-width: 1;
+}
+
+.chart-guide text {
+  fill: oklch(42% 0.01 260);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.metric-chart-line {
+  fill: none;
+  stroke: oklch(76% 0.008 260);
+  stroke-linecap: square;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.metric-chart-point circle {
+  fill: oklch(7.5% 0.004 260);
+  stroke: oklch(86% 0.01 260);
+  stroke-width: 2;
+  transition:
+    fill 160ms ease-out,
+    stroke 160ms ease-out,
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.metric-chart-point:hover circle {
+  fill: oklch(88% 0.01 260);
+  stroke: oklch(88% 0.01 260);
+  transform: scale(1.55);
+}
+
+.metric-chart-axis {
+  color: oklch(42% 0.01 260);
+  display: flex;
+  font-size: 0.72rem;
+  font-weight: 700;
+  justify-content: space-between;
+  line-height: 1;
+  padding: 0 4px;
 }
 
 @media (max-width: 760px) {
@@ -254,18 +323,8 @@ h2 {
     padding: 16px 12px 28px;
   }
 
-  .total-summary {
-    gap: 22px;
-    margin-bottom: 26px;
-  }
-
-  .total-summary strong {
-    font-size: 1.2rem;
-  }
-
   .year-card-header {
     align-items: flex-start;
-    flex-direction: column;
     gap: 6px;
     margin-bottom: 18px;
   }
@@ -275,12 +334,29 @@ h2 {
     font-size: 0.92rem;
     gap: 6px 8px;
     line-height: 1.35;
+  }
+
+  .year-legend-row {
     padding-left: 24px;
   }
 
   .legend {
-    flex-basis: 100%;
     margin-left: 0;
+  }
+
+  .metric-chart-grid {
+    gap: 10px;
+    grid-template-columns: 1fr;
+    margin-top: 14px;
+    padding-left: 0;
+  }
+
+  .metric-chart {
+    padding: 9px 8px 7px;
+  }
+
+  .metric-chart-header strong {
+    font-size: 0.9rem;
   }
 
   .calendar-wrap {

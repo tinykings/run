@@ -1,0 +1,254 @@
+{
+  "data" : {
+    "workouts" : [
+      {
+        "metadata" : {
+
+        },
+        "maxHeartRate" : {
+          "qty" : 176,
+          "units" : "bpm"
+        },
+        "avgHeartRate" : {
+          "units" : "bpm",
+          "qty" : 157.06319722037904
+        },
+        "duration" : 730.5536071062088,
+        "heartRateData" : [
+          {
+            "Min" : 95,
+            "source" : "Ryan’s Apple Watch",
+            "units" : "bpm",
+            "date" : "2026-06-09 06:48:10 -0700",
+            "Max" : 126,
+            "Avg" : 112.27669902912622
+          },
+          {
+            "date" : "2026-06-09 06:49:10 -0700",
+            "units" : "bpm",
+            "Min" : 129,
+            "Avg" : 137.37755102040816,
+            "Max" : 145,
+            "source" : "Ryan’s Apple Watch"
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-09 06:50:10 -0700",
+            "Max" : 153,
+            "Min" : 145,
+            "Avg" : 149.5,
+            "units" : "bpm"
+          },
+          {
+            "date" : "2026-06-09 06:51:10 -0700",
+            "Max" : 157,
+            "units" : "bpm",
+            "Min" : 152,
+            "source" : "Ryan’s Apple Watch",
+            "Avg" : 154.64903846153845
+          },
+          {
+            "Avg" : 155.87532467532469,
+            "units" : "bpm",
+            "Min" : 150,
+            "Max" : 161,
+            "date" : "2026-06-09 06:52:10 -0700",
+            "source" : "Ryan’s Apple Watch"
+          },
+          {
+            "Min" : 152,
+            "Avg" : 156.41769041769044,
+            "source" : "Ryan’s Apple Watch",
+            "units" : "bpm",
+            "date" : "2026-06-09 06:53:10 -0700",
+            "Max" : 160
+          },
+          {
+            "date" : "2026-06-09 06:54:10 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 161,
+            "Avg" : 163.76343381389253,
+            "Max" : 167,
+            "units" : "bpm"
+          },
+          {
+            "Avg" : 171.484693877551,
+            "units" : "bpm",
+            "Min" : 169,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-09 06:55:10 -0700",
+            "Max" : 175
+          },
+          {
+            "units" : "bpm",
+            "Max" : 175,
+            "source" : "Ryan’s Apple Watch",
+            "Min" : 159,
+            "date" : "2026-06-09 06:56:10 -0700",
+            "Avg" : 166.56227544910178
+          },
+          {
+            "Avg" : 171.16836734693877,
+            "Max" : 174,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-09 06:57:10 -0700",
+            "Min" : 167,
+            "units" : "bpm"
+          },
+          {
+            "Max" : 174,
+            "Avg" : 162.94278606965176,
+            "units" : "bpm",
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-09 06:58:10 -0700",
+            "Min" : 152
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "Max" : 175,
+            "date" : "2026-06-09 06:59:10 -0700",
+            "Min" : 151,
+            "Avg" : 163.80370370370372,
+            "units" : "bpm"
+          },
+          {
+            "date" : "2026-06-09 07:00:10 -0700",
+            "units" : "bpm",
+            "Max" : 176,
+            "Min" : 176,
+            "Avg" : 176,
+            "source" : "Ryan’s Apple Watch"
+          }
+        ],
+        "activeEnergyBurned" : {
+          "qty" : 548.15721213022914,
+          "units" : "kJ"
+        },
+        "end" : "2026-06-09 07:00:21 -0700",
+        "heartRate" : {
+          "max" : {
+            "qty" : 176,
+            "units" : "bpm"
+          },
+          "avg" : {
+            "qty" : 157.06319722037904,
+            "units" : "bpm"
+          },
+          "min" : {
+            "qty" : 95,
+            "units" : "bpm"
+          }
+        },
+        "isIndoor" : false,
+        "maxSpeed" : {
+          "units" : "km",
+          "qty" : 13.174235078779487
+        },
+        "distance" : {
+          "units" : "km",
+          "qty" : 1.6832782133046149
+        },
+        "id" : "9D7AB33E-B8DB-4216-BFAA-0A3FC659373C",
+        "start" : "2026-06-09 06:48:10 -0700",
+        "speed" : {
+          "qty" : 8.2948075390388603,
+          "units" : "km\/hr"
+        },
+        "activeEnergy" : [
+          {
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-09 06:48:10 -0700",
+            "units" : "kJ",
+            "qty" : 32.096345108887263
+          },
+          {
+            "units" : "kJ",
+            "qty" : 43.867242273560301,
+            "source" : "Ryan’s Apple Watch",
+            "date" : "2026-06-09 06:49:10 -0700"
+          },
+          {
+            "date" : "2026-06-09 06:50:10 -0700",
+            "qty" : 44.508484277597077,
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch"
+          },
+          {
+            "qty" : 42.127093002610152,
+            "date" : "2026-06-09 06:51:10 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "units" : "kJ"
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "qty" : 42.859598871698793,
+            "date" : "2026-06-09 06:52:10 -0700",
+            "units" : "kJ"
+          },
+          {
+            "qty" : 45.650475235260707,
+            "date" : "2026-06-09 06:53:10 -0700",
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch"
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "qty" : 50.70231529560656,
+            "units" : "kJ",
+            "date" : "2026-06-09 06:54:10 -0700"
+          },
+          {
+            "units" : "kJ",
+            "date" : "2026-06-09 06:55:10 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "qty" : 55.57935319839882
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "units" : "kJ",
+            "qty" : 39.065147982141887,
+            "date" : "2026-06-09 06:56:10 -0700"
+          },
+          {
+            "source" : "Ryan’s Apple Watch",
+            "qty" : 51.720555508998252,
+            "date" : "2026-06-09 06:57:10 -0700",
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-09 06:58:10 -0700",
+            "qty" : 38.205202130342983,
+            "units" : "kJ",
+            "source" : "Ryan’s Apple Watch"
+          },
+          {
+            "qty" : 54.234649977630852,
+            "date" : "2026-06-09 06:59:10 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "units" : "kJ"
+          },
+          {
+            "date" : "2026-06-09 07:00:10 -0700",
+            "source" : "Ryan’s Apple Watch",
+            "units" : "kJ",
+            "qty" : 7.5084571372663556
+          }
+        ],
+        "name" : "Outdoor Run",
+        "avgSpeed" : {
+          "units" : "km",
+          "qty" : 8.4085827053507955
+        },
+        "intensity" : {
+          "qty" : 8.4722429755382844,
+          "units" : "kcal\/hr·kg"
+        },
+        "location" : "Outdoor",
+        "elevationUp" : {
+          "qty" : 2.1099999999999999,
+          "units" : "m"
+        }
+      }
+    ]
+  }
+}

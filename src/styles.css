@@ -43,17 +43,30 @@ h2 {
   margin-bottom: 0;
 }
 
-.year-title-stack {
-  align-items: flex-start;
+.year-heading {
+  align-items: baseline;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  gap: 14px;
 }
 
-.year-mark {
+.year-streak {
+  align-items: baseline;
+  color: oklch(73% 0.01 260);
+  display: flex;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.year-streak strong {
   color: oklch(91% 0.01 260);
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 800;
+}
+
+.year-streak span {
+  color: oklch(58% 0.01 260);
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
 .year-card {
@@ -66,10 +79,14 @@ h2 {
 
 .year-card-header {
   align-items: baseline;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 18px;
+  display: grid;
+  gap: 10px 8px;
+  grid-template-columns: 20px 1fr;
   margin-bottom: 26px;
+}
+
+.year-heading {
+  grid-column: 1 / -1;
 }
 
 .year-card-header h2 span,
@@ -85,7 +102,10 @@ h2 {
   font-size: 1rem;
   flex-wrap: wrap;
   font-weight: 700;
+  grid-column: 1 / -1;
   gap: 8px;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .calendar-wrap {
@@ -143,19 +163,43 @@ h2 {
 }
 
 .intensity-1 {
-  background: oklch(28% 0.006 260);
+  background: oklch(24% 0.005 260);
 }
 
 .intensity-2 {
-  background: oklch(42% 0.006 260);
+  background: oklch(30% 0.005 260);
 }
 
 .intensity-3 {
-  background: oklch(55% 0.006 260);
+  background: oklch(36% 0.005 260);
 }
 
 .intensity-4 {
-  background: oklch(68% 0.006 260);
+  background: oklch(42% 0.006 260);
+}
+
+.intensity-5 {
+  background: oklch(48% 0.006 260);
+}
+
+.intensity-6 {
+  background: oklch(54% 0.006 260);
+}
+
+.intensity-7 {
+  background: oklch(60% 0.006 260);
+}
+
+.intensity-8 {
+  background: oklch(66% 0.006 260);
+}
+
+.intensity-9 {
+  background: oklch(72% 0.006 260);
+}
+
+.intensity-10 {
+  background: oklch(78% 0.006 260);
 }
 
 .day-cell[data-tooltip]:not([data-tooltip=""]):hover {
@@ -193,157 +237,95 @@ h2 {
   line-height: 1;
 }
 
-.combined-metric-chart {
-  margin-top: 18px;
-  position: relative;
-  width: var(--chart-width);
-}
-
-.metric-chart {
+.route-map {
+  background: oklch(8% 0.004 260);
   border: 1px solid oklch(17% 0.004 260);
-  border-radius: 2px;
-  min-width: 0;
-  padding: 8px 10px 8px;
+  margin: 20px 0 0 28px;
+  max-width: 960px;
+  overflow: visible;
+  position: relative;
 }
 
-.metric-chart-header {
-  align-items: baseline;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-start;
-  margin-bottom: 6px;
-}
-
-.metric-chart-header > span {
-  color: oklch(58% 0.01 260);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.metric-chart-header > strong {
-  color: oklch(83% 0.01 260);
-  font-size: 0.95rem;
-  line-height: 1;
-}
-
-.metric-chart-svg {
+.route-map-svg {
   display: block;
   height: auto;
-  overflow: visible;
   width: 100%;
 }
 
-.chart-guide line {
-  stroke: oklch(17% 0.004 260);
-  stroke-width: 1;
+.route-layer {
+  color: oklch(56% 0.006 260);
+  transition: opacity 160ms ease-out;
 }
 
-.chart-guide text {
-  fill: oklch(42% 0.01 260);
-  font-size: 11px;
-  font-weight: 700;
+.route-layer.intensity-1 {
+  color: oklch(24% 0.005 260);
 }
 
-.metric-chart-line {
+.route-layer.intensity-2 {
+  color: oklch(30% 0.005 260);
+}
+
+.route-layer.intensity-3 {
+  color: oklch(36% 0.005 260);
+}
+
+.route-layer.intensity-4 {
+  color: oklch(42% 0.006 260);
+}
+
+.route-layer.intensity-5 {
+  color: oklch(48% 0.006 260);
+}
+
+.route-layer.intensity-6 {
+  color: oklch(54% 0.006 260);
+}
+
+.route-layer.intensity-7 {
+  color: oklch(60% 0.006 260);
+}
+
+.route-layer.intensity-8 {
+  color: oklch(66% 0.006 260);
+}
+
+.route-layer.intensity-9 {
+  color: oklch(72% 0.006 260);
+}
+
+.route-layer.intensity-10 {
+  color: oklch(78% 0.006 260);
+}
+
+.route-hidden {
+  opacity: 0.03;
+}
+
+.route-active {
+  color: oklch(86% 0.006 260);
+  opacity: 1;
+}
+
+.route-path {
   fill: none;
-  pointer-events: none;
-  stroke: var(--series-color, oklch(76% 0.008 260));
-  stroke-linecap: square;
+  stroke: currentColor;
+  stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2.2;
-  transition:
-    opacity 160ms ease-out,
-    stroke 160ms ease-out,
-    stroke-width 160ms ease-out;
+  stroke-width: 2.4;
 }
 
-.metric-chart-hit-line {
-  fill: none;
-  pointer-events: stroke;
-  stroke: transparent;
-  stroke-linecap: square;
-  stroke-linejoin: round;
-  stroke-width: 16;
+.route-active .route-path {
+  stroke-width: 3.8;
 }
 
-.metric-chart-svg:has(.metric-series:hover) .metric-series:not(:hover) .metric-chart-line,
-.metric-chart-svg:has(.metric-series:hover) .metric-series:not(:hover) .metric-chart-point {
-  opacity: 0.28;
+.route-marker {
+  fill: oklch(8% 0.004 260);
+  stroke: currentColor;
+  stroke-width: 1.5;
 }
 
-.metric-series:hover .metric-chart-line {
-  stroke: oklch(94% 0.004 260);
-  stroke-width: 4;
-}
-
-.metric-series:hover .metric-chart-point circle {
-  fill: oklch(94% 0.004 260);
-  stroke: oklch(94% 0.004 260);
-}
-
-.metric-chart-point circle {
-  fill: oklch(7.5% 0.004 260);
-  stroke: var(--series-color, oklch(86% 0.01 260));
-  stroke-width: 2;
-  transition:
-    fill 160ms ease-out,
-    stroke 160ms ease-out,
-    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.metric-chart-point:hover circle {
-  fill: var(--series-color, oklch(88% 0.01 260));
-  stroke: var(--series-color, oklch(88% 0.01 260));
-  transform: scale(1.55);
-}
-
-.metric-distance {
-  --series-color: oklch(86% 0.004 260);
-}
-
-.metric-time {
-  --series-color: oklch(70% 0.004 260);
-}
-
-.metric-bpm {
-  --series-color: oklch(56% 0.004 260);
-}
-
-.metric-power {
-  --series-color: oklch(42% 0.004 260);
-}
-
-.metric-chart-axis {
-  color: oklch(42% 0.01 260);
-  display: flex;
-  font-size: 0.72rem;
-  font-weight: 700;
-  justify-content: space-between;
-  line-height: 1;
-  padding: 0 4px;
-}
-
-.metric-chart-tooltip {
-  background: oklch(92% 0.008 260);
-  border-radius: 4px;
-  color: oklch(12% 0.006 260);
-  font-size: 0.78rem;
-  font-weight: 800;
-  left: 0;
-  line-height: 1;
-  min-width: 92px;
-  padding: 7px 8px;
-  pointer-events: none;
-  position: absolute;
-  text-align: left;
-  top: 0;
-  transform: translate(-50%, calc(-100% - 10px)) scale(0.8);
-  transform-origin: bottom center;
-  white-space: pre;
-  z-index: 10;
+.route-active .route-marker {
+  fill: currentColor;
 }
 
 @media (max-width: 760px) {
@@ -373,24 +355,6 @@ h2 {
     font-size: 0.92rem;
     gap: 6px 8px;
     line-height: 1.35;
-  }
-
-  .combined-metric-chart {
-    margin-top: 14px;
-    width: 100%;
-  }
-
-  .metric-chart {
-    padding: 9px 8px 7px;
-  }
-
-  .metric-chart-header > strong {
-    font-size: 0.9rem;
-  }
-
-  .metric-chart-header {
-    align-items: flex-start;
-    flex-direction: column;
   }
 
   .calendar-wrap {
@@ -435,6 +399,11 @@ h2 {
 
   .month-labels {
     display: none;
+  }
+
+  .route-map {
+    margin: 16px 0 0;
+    max-width: none;
   }
 
   .calendar-grid .day-cell[data-tooltip]:not([data-tooltip=""]):hover {

@@ -24,10 +24,12 @@ export type HealthWorkout = {
   elevationAscendedM?: number;
   end?: string;
   humidityPercent?: number;
+  id?: string;
   intensity?: number;
   isIndoor?: boolean;
   maxSpeedKmh?: number;
   name?: string;
+  route?: RoutePoint[];
   source?: string;
   start?: string;
   startLocal?: string;
@@ -36,6 +38,11 @@ export type HealthWorkout = {
   type?: string;
   weatherHumidityPercent?: number;
   weatherTemperatureC?: number;
+};
+
+export type RoutePoint = {
+  latitude: number;
+  longitude: number;
 };
 
 type HealthAutoExportWorkout = {
@@ -52,9 +59,15 @@ type HealthAutoExportWorkout = {
   isIndoor?: boolean;
   maxSpeed?: Quantity;
   name?: string;
+  route?: HealthAutoExportRoutePoint[];
   speed?: Quantity;
   start?: string;
   temperature?: Quantity;
+};
+
+type HealthAutoExportRoutePoint = {
+  latitude?: number;
+  longitude?: number;
 };
 
 type Quantity = {
@@ -80,6 +93,9 @@ export type RunStats = {
   totalDistanceKm: number;
   totalDurationSec: number;
   totalRuns: number;
+  totalElevationGainM: number;
+  averageElevationGainM: number | null;
+  averageSpeedKmh: number | null;
   averagePaceSecPerKm: number | null;
   averageHeartRate: number | null;
   averagePower: number | null;
@@ -87,12 +103,15 @@ export type RunStats = {
 
 const KILOJOULES_PER_KILOCALORIE = 4.184;
 const MILES_PER_KILOMETER = 0.621371;
+const MAX_ROUTE_POINTS = 250;
 
 export function normalizeHealthExports(exports: HealthExport[]): HealthExport {
+  const workouts = dedupeWorkouts(exports.flatMap((healthExport) => getWorkouts(healthExport)));
+
   return {
     activity: {
       timeZone: "source",
-      workouts: exports.flatMap((healthExport) => getWorkouts(healthExport)),
+      workouts,
     },
   };
 }
@@ -132,6 +151,7 @@ export function getRunsByDate(data: HealthExport) {
 export function getRunStats(days: Iterable<DayRuns>): RunStats {
   let totalDistanceKm = 0;
   let totalDurationSec = 0;
+  let totalElevationGainM = 0;
   let totalRuns = 0;
   let heartRateWeightedTotal = 0;
   let heartRateDurationSec = 0;
@@ -144,6 +164,8 @@ export function getRunStats(days: Iterable<DayRuns>): RunStats {
     totalRuns += day.runs.length;
 
     for (const run of day.runs) {
+      totalElevationGainM += run.elevationAscendedM ?? 0;
+
       if (run.avgHeartRate !== undefined && Number.isFinite(run.avgHeartRate)) {
         heartRateWeightedTotal += run.avgHeartRate * run.durationSec;
         heartRateDurationSec += run.durationSec;
@@ -159,7 +181,10 @@ export function getRunStats(days: Iterable<DayRuns>): RunStats {
   return {
     totalDistanceKm,
     totalDurationSec,
+    totalElevationGainM,
     totalRuns,
+    averageElevationGainM: totalRuns > 0 ? totalElevationGainM / totalRuns : null,
+    averageSpeedKmh: totalDurationSec > 0 ? (totalDistanceKm / totalDurationSec) * 3600 : null,
     averagePaceSecPerKm: totalDistanceKm > 0 ? totalDurationSec / totalDistanceKm : null,
     averageHeartRate: heartRateDurationSec > 0 ? heartRateWeightedTotal / heartRateDurationSec : null,
     averagePower: powerDurationSec > 0 ? powerWeightedTotal / powerDurationSec : null,
@@ -302,10 +327,12 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
       elevationAscendedM: workout.elevationUp?.qty,
       end: toIsoWithOffset(workout.end),
       humidityPercent,
+      id: workout.id,
       intensity: workout.intensity?.qty,
       isIndoor: workout.isIndoor ?? workout.name.includes("Indoor"),
-      maxSpeedKmh: workout.maxSpeed?.qty,
+      maxSpeedKmh: workout.maxSpeed?.qty ?? workout.speed?.qty,
       name: workout.name,
+      route: normalizeRoute(workout.route),
       source: "Health Auto Export",
       start: toIsoWithOffset(workout.start),
       startLocal: workout.start,
@@ -316,6 +343,44 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
       weatherTemperatureC: temperatureC,
     },
   ];
+}
+
+function normalizeRoute(route: HealthAutoExportRoutePoint[] | undefined) {
+  const points = route
+    ?.filter((point) => point.latitude !== undefined && point.longitude !== undefined)
+    .map((point) => ({ latitude: point.latitude as number, longitude: point.longitude as number }));
+
+  if (!points || points.length <= MAX_ROUTE_POINTS) {
+    return points;
+  }
+
+  const step = Math.ceil(points.length / MAX_ROUTE_POINTS);
+  const sampled = points.filter((_, index) => index % step === 0);
+  const lastPoint = points.at(-1);
+
+  if (lastPoint && sampled.at(-1) !== lastPoint) {
+    sampled.push(lastPoint);
+  }
+
+  return sampled;
+}
+
+function dedupeWorkouts(workouts: HealthWorkout[]) {
+  const seen = new Set<string>();
+  const deduped: HealthWorkout[] = [];
+
+  for (const workout of workouts) {
+    const key = workout.id ?? [workout.start, workout.name, workout.distanceKm, workout.durationSec].join("|");
+
+    if (seen.has(key)) {
+      continue;
+    }
+
+    seen.add(key);
+    deduped.push(workout);
+  }
+
+  return deduped;
 }
 
 function convertEnergyToKcal(quantity: Quantity | undefined) {

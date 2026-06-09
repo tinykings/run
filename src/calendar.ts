@@ -1,5 +1,7 @@
 import type { DayRuns } from "./health";
 
+const MILES_PER_KILOMETER = 0.621371;
+
 export type CalendarDay = {
   date: string;
   day: DayRuns | null;
@@ -39,23 +41,9 @@ export function buildCalendarDays(year: number, runsByDate: Map<string, DayRuns>
 }
 
 export function getIntensity(distanceKm: number) {
-  if (distanceKm >= 10) {
-    return 4;
-  }
+  const miles = distanceKm * MILES_PER_KILOMETER;
 
-  if (distanceKm >= 5) {
-    return 3;
-  }
-
-  if (distanceKm >= 2) {
-    return 2;
-  }
-
-  if (distanceKm > 0) {
-    return 1;
-  }
-
-  return 0;
+  return miles > 0 ? Math.min(Math.ceil(miles), 10) : 0;
 }
 
 function toDateKey(date: Date) {

@@ -1,4 +1,4 @@
-import { type CSSProperties, type MouseEvent, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { buildCalendarDays, getIntensity } from "./calendar";
 import {
   type HealthExport,
@@ -11,21 +11,69 @@ import {
   normalizeHealthExports,
 } from "./health";
 
-const workoutFiles = import.meta.glob("../data/workouts/*.json", { eager: true });
-const data = normalizeHealthExports(Object.values(workoutFiles).map(getJsonExport));
 const WEEK_DAYS = ["S", "M", "T", "W", "T", "F", "S"];
-const DESKTOP_CALENDAR_CELL = 18;
-const DESKTOP_CALENDAR_GAP = 4;
-const DESKTOP_WEEKDAY_LABEL_WIDTH = 20;
-const DESKTOP_WEEKDAY_LABEL_GAP = 8;
-const CHART_HEIGHT = 150;
-const CHART_LEFT_PADDING = 56;
-const CHART_RIGHT_PADDING = 18;
-const CHART_VERTICAL_PADDING = 18;
+const ROUTE_MAP_WIDTH = 960;
+const ROUTE_MAP_HEIGHT = 240;
+const ROUTE_MAP_PADDING = 16;
 
 export default function App() {
-  const runsByDate = useMemo(() => getRunsByDate(data), []);
+  const [data, setData] = useState<HealthExport | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadWorkoutData() {
+      try {
+        const baseUrl = import.meta.env.BASE_URL;
+        const manifestResponse = await fetch(`${baseUrl}data/workouts/index.json`);
+
+        if (!manifestResponse.ok) {
+          throw new Error(`Unable to load workout manifest: ${manifestResponse.status}`);
+        }
+
+        const files = (await manifestResponse.json()) as string[];
+        const exports = await Promise.all(
+          files.map(async (file) => {
+            const response = await fetch(`${baseUrl}data/workouts/${file}`);
+
+            if (!response.ok) {
+              throw new Error(`Unable to load workout file: ${file}`);
+            }
+
+            return getTextExport(await response.text());
+          }),
+        );
+
+        if (!cancelled) {
+          setData(normalizeHealthExports(exports));
+        }
+      } catch (error) {
+        console.error(error);
+
+        if (!cancelled) {
+          setLoadError(true);
+        }
+      }
+    }
+
+    loadWorkoutData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const runsByDate = useMemo(() => getRunsByDate(data ?? { activity: { workouts: [] } }), [data]);
   const years = useMemo(() => getYearOptions(runsByDate.values()), [runsByDate]);
+
+  if (loadError) {
+    return <main className="app app-message">Unable to load run data.</main>;
+  }
+
+  if (!data) {
+    return <main className="app app-message">Loading runs...</main>;
+  }
 
   return (
     <main className="app">
@@ -36,12 +84,15 @@ export default function App() {
   );
 }
 
-function getJsonExport(file: unknown): HealthExport {
-  if (file && typeof file === "object" && "default" in file) {
-    return (file as { default: HealthExport }).default;
+function getTextExport(file: unknown): HealthExport {
+  const text = String(file);
+  const jsonStart = text.indexOf("{");
+
+  if (jsonStart === -1) {
+    return JSON.parse(text) as HealthExport;
   }
 
-  return file as HealthExport;
+  return JSON.parse(text.slice(jsonStart)) as HealthExport;
 }
 
 function YearCard({
@@ -56,23 +107,29 @@ function YearCard({
     .filter((day) => day.date.startsWith(String(year)))
     .sort((a, b) => a.date.localeCompare(b.date));
   const yearStats = getRunStats(yearDays);
+  const dayStreak = getLongestDayStreak(yearDays);
   const monthLabels = getMonthLabels(year);
   const weekCount = calendarDays.length / 7;
   const mobileColumnCount = Math.ceil(weekCount / 2);
-  const metricSeries = getMetricSeries(yearDays, yearStats);
-  const chartWidth = getDesktopCalendarWidth(weekCount);
+  const [activeRouteDate, setActiveRouteDate] = useState<string | null>(null);
 
   return (
     <section className="year-card" aria-label={`${year} running activity`}>
       <div className="year-card-header">
-        <div className="year-title-stack">
+        <div className="year-heading">
           <h2>{year}</h2>
+          <div className="year-streak">
+            <strong>{dayStreak}</strong>
+            <span>Day Streak</span>
+          </div>
         </div>
         <div className="year-total">
           <span>Distance</span> {formatDistance(yearStats.totalDistanceKm)} <span>Time</span>{" "}
           {formatDuration(yearStats.totalDurationSec)} <span>BPM</span>{" "}
           {formatHeartRate(yearStats.averageHeartRate)} <span>Power</span>{" "}
-          {formatPower(yearStats.averagePower)}
+          {formatPower(yearStats.averagePower)} <span>Elevation</span>{" "}
+          {formatElevation(yearStats.averageElevationGainM)} <span>Speed</span>{" "}
+          {formatSpeedMph(yearStats.averageSpeedKmh)}
         </div>
       </div>
 
@@ -94,15 +151,7 @@ function YearCard({
           <div className="calendar-grid" aria-label={`${year} running activity calendar`}>
             {calendarDays.map((calendarDay, dayIndex) => {
               const intensity = getIntensity(calendarDay.distanceKm);
-              const tooltip = calendarDay.day
-                ? [
-                    formatTooltipDate(calendarDay.date),
-                    formatDistance(calendarDay.distanceKm),
-                    formatTooltipDuration(calendarDay.day.durationSec),
-                    formatAverage(calendarDay.day.runs, "avgHeartRate", "bpm"),
-                    formatAverage(calendarDay.day.runs, "intensity", "pwr"),
-                  ].join("\n")
-                : undefined;
+              const tooltip = calendarDay.day ? getDayTooltip(calendarDay.date, calendarDay.day) : undefined;
 
               return (
                 <span
@@ -110,6 +159,8 @@ function YearCard({
                   className={`day-cell intensity-${intensity}`}
                   data-tooltip={tooltip}
                   key={`${calendarDay.date}-${dayIndex}`}
+                  onMouseEnter={() => calendarDay.day && setActiveRouteDate(calendarDay.date)}
+                  onMouseLeave={() => setActiveRouteDate(null)}
                 />
               );
             })}
@@ -124,97 +175,52 @@ function YearCard({
         </div>
       </div>
 
-      <CombinedMetricChart chartWidth={chartWidth} series={metricSeries} year={year} />
+      <RouteMap
+        activeDate={activeRouteDate}
+        days={yearDays}
+      />
+
     </section>
   );
 }
 
-function CombinedMetricChart({
-  chartWidth,
-  series,
-  year,
+function RouteMap({
+  activeDate,
+  days,
 }: {
-  chartWidth: number;
-  series: MetricSeries[];
-  year: number;
+  activeDate: string | null;
+  days: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[];
 }) {
-  const plottedSeries = series.map((metric) => ({
-    ...metric,
-    plottedPoints: getPlottedPoints(metric.points, chartWidth),
-  }));
-  const latestPoint = series[0]?.points.at(-1);
-  const [tooltip, setTooltip] = useState<MetricTooltip | null>(null);
+  const routes = getRouteMapRoutes(days);
 
-  function showTooltip(event: MouseEvent, text: string) {
-    const chart = event.currentTarget.closest(".combined-metric-chart");
-
-    if (!chart) {
-      return;
-    }
-
-    const bounds = chart.getBoundingClientRect();
-
-    setTooltip({
-      text,
-      x: event.clientX - bounds.left,
-      y: event.clientY - bounds.top,
-    });
+  if (routes.length === 0) {
+    return null;
   }
 
   return (
-    <section
-      className="metric-chart combined-metric-chart"
-      aria-label={`${year} running metrics over time`}
-      style={{ "--chart-width": `${chartWidth}px` } as CSSProperties}
-    >
-      <svg className="metric-chart-svg" viewBox={`0 0 ${chartWidth} ${CHART_HEIGHT}`} role="img">
-        <title>{`${year} distance, time, BPM, and power line chart`}</title>
-        {[1, 0.5, 0].map((tick) => {
-          const y = scaleNormalizedChartValue(tick);
-
-          return (
-            <g className="chart-guide" key={`metric-${tick}`}>
-              <line x1={CHART_LEFT_PADDING} x2={chartWidth - CHART_RIGHT_PADDING} y1={y} y2={y} />
-            </g>
-          );
-        })}
-        {plottedSeries.map((metric) => {
-          const linePath = metric.plottedPoints.map((point) => `${point.x},${point.y}`).join(" ");
-          const metricTooltip = `${metric.label}\n${metric.summaryLabel}`;
+    <section className="route-map" aria-label="Running routes map">
+      <svg className="route-map-svg" viewBox={`0 0 ${ROUTE_MAP_WIDTH} ${ROUTE_MAP_HEIGHT}`} role="img">
+        <title>Running routes</title>
+        {routes.map((route) => {
+          const active = activeDate === route.date;
+          const hidden = activeDate !== null && !active;
+          const normalizedPoints = projectNormalizedRoute(route.points);
+          const points = normalizedPoints.map(formatRoutePoint).join(" ");
+          const start = normalizedPoints[0];
+          const end = normalizedPoints[normalizedPoints.length - 1];
 
           return (
             <g
-              className={`metric-series ${metric.className}`}
-              key={metric.label}
-              onMouseLeave={() => setTooltip(null)}
-              onMouseMove={(event) => showTooltip(event, metricTooltip)}
+              className={`route-layer intensity-${route.intensity}${active ? " route-active" : ""}${hidden ? " route-hidden" : ""}`}
+              key={`${route.date}-${route.index}`}
             >
-              {linePath && <polyline className="metric-chart-line" points={linePath} />}
-              {linePath && <polyline className="metric-chart-hit-line" points={linePath} />}
-              {metric.plottedPoints.map((point) => (
-                <g
-                  className="metric-chart-point"
-                  key={`${metric.label}-${point.date}`}
-                  onMouseMove={(event) =>
-                    showTooltip(event, `${point.label}\n${metric.label}: ${metric.formatValue(point.value)}`)
-                  }
-                >
-                  <circle cx={point.x} cy={point.y} r="3" />
-                </g>
-              ))}
+              <polyline className="route-path" points={points} />
+              <circle className="route-marker route-start" cx={start.x} cy={start.y} r="3" />
+              <rect className="route-marker route-end" height="6" width="6" x={end.x - 3} y={end.y - 3} />
             </g>
           );
         })}
       </svg>
-      <div className="metric-chart-axis" aria-hidden="true">
-        <span>{series[0]?.points[0]?.label ?? "--"}</span>
-        <span>{latestPoint?.label ?? "--"}</span>
-      </div>
-      {tooltip && (
-        <div className="metric-chart-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
-          {tooltip.text}
-        </div>
-      )}
     </section>
   );
 }
@@ -235,6 +241,22 @@ function formatPower(power: number | null | undefined) {
   return power.toFixed(1);
 }
 
+function formatElevation(elevationM: number | null | undefined) {
+  if (elevationM === null || elevationM === undefined || !Number.isFinite(elevationM)) {
+    return "-- ft";
+  }
+
+  return `${Math.round(elevationM * 3.28084)} ft`;
+}
+
+function formatSpeedMph(speedKmh: number | null | undefined) {
+  if (speedKmh === null || speedKmh === undefined || !Number.isFinite(speedKmh)) {
+    return "-- mph";
+  }
+
+  return `${(speedKmh * 0.621371).toFixed(1)} mph`;
+}
+
 function formatTooltipDate(date: string) {
   return new Intl.DateTimeFormat(undefined, {
     month: "short",
@@ -251,20 +273,16 @@ function formatTooltipDuration(totalSeconds: number) {
   return hours > 0 ? `${hours}h:${minutes}m` : `${minutes} min`;
 }
 
-function formatCompactDuration(totalSeconds: number) {
-  const totalMinutes = Math.round(totalSeconds / 60);
-
-  if (totalMinutes >= 60) {
-    return `${(totalMinutes / 60).toFixed(totalMinutes >= 600 ? 0 : 1)}h`;
-  }
-
-  return `${totalMinutes}m`;
-}
-
-function formatCompactDistance(km: number) {
-  const miles = km * 0.621371;
-
-  return `${miles.toFixed(miles >= 10 ? 1 : 2)} mi`;
+function getDayTooltip(date: string, day: { distanceKm: number; durationSec: number; runs: Run[] }) {
+  return [
+    formatTooltipDate(date),
+    formatDistance(day.distanceKm),
+    formatTooltipDuration(day.durationSec),
+    formatAverage(day.runs, "avgHeartRate", "bpm"),
+    formatAverage(day.runs, "intensity", "pwr"),
+    formatElevation(getTotalElevationGain(day.runs)),
+    formatSpeedMph(getAverageSpeedKmh(day.runs)),
+  ].join("\n");
 }
 
 function formatAverage(
@@ -296,6 +314,17 @@ function formatAverage(
   return unit ? `${displayValue} ${unit}` : displayValue;
 }
 
+function getTotalElevationGain(runs: Run[]) {
+  return runs.reduce((total, run) => total + (run.elevationAscendedM ?? 0), 0);
+}
+
+function getAverageSpeedKmh(runs: Run[]) {
+  const totalDistanceKm = runs.reduce((total, run) => total + run.distanceKm, 0);
+  const totalDurationSec = runs.reduce((total, run) => total + run.durationSec, 0);
+
+  return totalDurationSec > 0 ? (totalDistanceKm / totalDurationSec) * 3600 : null;
+}
+
 function getMonthLabels(year: number) {
   const labels = [];
   const yearStart = new Date(Date.UTC(year, 0, 1));
@@ -315,111 +344,68 @@ function getMonthLabels(year: number) {
   return labels;
 }
 
-function getDesktopCalendarWidth(weekCount: number) {
-  const calendarGridWidth = weekCount * DESKTOP_CALENDAR_CELL + (weekCount - 1) * DESKTOP_CALENDAR_GAP;
+function getLongestDayStreak(days: { date: string }[]) {
+  let longestStreak = 0;
+  let currentStreak = 0;
+  let previousTime: number | null = null;
 
-  return DESKTOP_WEEKDAY_LABEL_WIDTH + DESKTOP_WEEKDAY_LABEL_GAP + calendarGridWidth;
-}
+  for (const day of days) {
+    const currentTime = Date.parse(`${day.date}T00:00:00Z`);
 
-type ChartPoint = {
-  date: string;
-  label: string;
-  value: number;
-};
-
-type MetricSeries = {
-  className: string;
-  formatValue: (value: number) => string;
-  label: string;
-  points: ChartPoint[];
-  summaryLabel: string;
-};
-
-type MetricTooltip = {
-  text: string;
-  x: number;
-  y: number;
-};
-
-function getMetricSeries(
-  yearDays: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[],
-  yearStats: ReturnType<typeof getRunStats>,
-): MetricSeries[] {
-  const dayLabel = (date: string) => formatTooltipDate(date);
-
-  return [
-    {
-      className: "metric-distance",
-      formatValue: formatCompactDistance,
-      label: "Distance",
-      points: yearDays.map((day) => ({ date: day.date, label: dayLabel(day.date), value: day.distanceKm })),
-      summaryLabel: formatDistance(yearStats.totalDistanceKm),
-    },
-    {
-      className: "metric-time",
-      formatValue: formatCompactDuration,
-      label: "Time",
-      points: yearDays.map((day) => ({ date: day.date, label: dayLabel(day.date), value: day.durationSec })),
-      summaryLabel: formatDuration(yearStats.totalDurationSec),
-    },
-    {
-      className: "metric-bpm",
-      formatValue: (value) => `${Math.round(value)} bpm`,
-      label: "BPM",
-      points: yearDays.map((day) => ({
-        date: day.date,
-        label: dayLabel(day.date),
-        value: getWeightedAverage(day.runs, "avgHeartRate") ?? 0,
-      })),
-      summaryLabel: formatHeartRate(yearStats.averageHeartRate),
-    },
-    {
-      className: "metric-power",
-      formatValue: (value) => `${value.toFixed(1)} pwr`,
-      label: "Power",
-      points: yearDays.map((day) => ({
-        date: day.date,
-        label: dayLabel(day.date),
-        value: getWeightedAverage(day.runs, "intensity") ?? 0,
-      })),
-      summaryLabel: formatPower(yearStats.averagePower),
-    },
-  ];
-}
-
-function getWeightedAverage(runs: Run[], field: "avgHeartRate" | "intensity") {
-  let weightedTotal = 0;
-  let totalDuration = 0;
-
-  for (const run of runs) {
-    const value = run[field];
-
-    if (value === undefined || !Number.isFinite(value)) {
-      continue;
-    }
-
-    weightedTotal += value * run.durationSec;
-    totalDuration += run.durationSec;
+    currentStreak = previousTime !== null && currentTime - previousTime === 86400000 ? currentStreak + 1 : 1;
+    longestStreak = Math.max(longestStreak, currentStreak);
+    previousTime = currentTime;
   }
 
-  return totalDuration > 0 ? weightedTotal / totalDuration : null;
+  return longestStreak;
 }
 
-function getPlottedPoints(points: ChartPoint[], chartWidth: number) {
-  const maxValue = Math.max(...points.map((point) => point.value), 0);
-  const drawableWidth = chartWidth - CHART_LEFT_PADDING - CHART_RIGHT_PADDING;
+type RouteMapPoint = {
+  latitude: number;
+  longitude: number;
+};
 
-  return points.map((point, index) => ({
-    ...point,
-    x:
-      CHART_LEFT_PADDING +
-      (points.length === 1 ? drawableWidth / 2 : (index / (points.length - 1)) * drawableWidth),
-    y: scaleNormalizedChartValue(maxValue > 0 ? point.value / maxValue : 0),
+function getRouteMapRoutes(days: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[]) {
+  return days.flatMap((day) =>
+    day.runs.flatMap((run, index) => {
+      if (!run.route || run.route.length < 2) {
+        return [];
+      }
+
+      return [
+        {
+          date: day.date,
+          index,
+          intensity: getIntensity(day.distanceKm),
+          points: run.route,
+          tooltip: getDayTooltip(day.date, day),
+        },
+      ];
+    }),
+  );
+}
+
+function projectNormalizedRoute(points: RouteMapPoint[]) {
+  const maxLatitude = Math.max(...points.map((point) => point.latitude));
+  const maxLongitude = Math.max(...points.map((point) => point.longitude));
+  const minLatitude = Math.min(...points.map((point) => point.latitude));
+  const minLongitude = Math.min(...points.map((point) => point.longitude));
+  const latitudeRange = maxLatitude - minLatitude || 1;
+  const longitudeRange = maxLongitude - minLongitude || 1;
+  const drawableWidth = ROUTE_MAP_WIDTH - ROUTE_MAP_PADDING * 2;
+  const drawableHeight = ROUTE_MAP_HEIGHT - ROUTE_MAP_PADDING * 2;
+  const scale = Math.min(drawableWidth / longitudeRange, drawableHeight / latitudeRange);
+  const scaledWidth = longitudeRange * scale;
+  const scaledHeight = latitudeRange * scale;
+  const xOffset = ROUTE_MAP_PADDING + (drawableWidth - scaledWidth) / 2;
+  const yOffset = ROUTE_MAP_PADDING + (drawableHeight - scaledHeight) / 2;
+
+  return points.map((point) => ({
+    x: xOffset + (point.longitude - minLongitude) * scale,
+    y: yOffset + (maxLatitude - point.latitude) * scale,
   }));
 }
 
-function scaleNormalizedChartValue(value: number) {
-  const drawableHeight = CHART_HEIGHT - CHART_VERTICAL_PADDING * 2;
-
-  return CHART_VERTICAL_PADDING + drawableHeight - value * drawableHeight;
+function formatRoutePoint(point: { x: number; y: number }) {
+  return `${point.x.toFixed(2)},${point.y.toFixed(2)}`;
 }

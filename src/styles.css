@@ -88,30 +88,6 @@ h2 {
   gap: 8px;
 }
 
-.year-legend-row {
-  align-items: center;
-  display: flex;
-  margin-top: 14px;
-  padding-left: 28px;
-}
-
-.legend {
-  align-items: center;
-  color: oklch(42% 0.01 260);
-  display: inline-flex;
-  font-size: 0.78rem;
-  font-weight: 600;
-  gap: 4px;
-  margin-left: 10px;
-}
-
-.legend-box {
-  border-radius: 1px;
-  display: inline-block;
-  height: 10px;
-  width: 10px;
-}
-
 .calendar-wrap {
   display: grid;
   gap: 8px;
@@ -217,37 +193,35 @@ h2 {
   line-height: 1;
 }
 
-.metric-chart-grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.combined-metric-chart {
   margin-top: 18px;
-  padding-left: 28px;
+  position: relative;
+  width: var(--chart-width);
 }
 
 .metric-chart {
   border: 1px solid oklch(17% 0.004 260);
   border-radius: 2px;
   min-width: 0;
-  padding: 10px 10px 8px;
+  padding: 8px 10px 8px;
 }
 
 .metric-chart-header {
   align-items: baseline;
   display: flex;
   gap: 10px;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-bottom: 6px;
 }
 
-.metric-chart-header span {
+.metric-chart-header > span {
   color: oklch(58% 0.01 260);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
 }
 
-.metric-chart-header strong {
+.metric-chart-header > strong {
   color: oklch(83% 0.01 260);
   font-size: 0.95rem;
   line-height: 1;
@@ -273,15 +247,44 @@ h2 {
 
 .metric-chart-line {
   fill: none;
-  stroke: oklch(76% 0.008 260);
+  pointer-events: none;
+  stroke: var(--series-color, oklch(76% 0.008 260));
   stroke-linecap: square;
   stroke-linejoin: round;
-  stroke-width: 2;
+  stroke-width: 2.2;
+  transition:
+    opacity 160ms ease-out,
+    stroke 160ms ease-out,
+    stroke-width 160ms ease-out;
+}
+
+.metric-chart-hit-line {
+  fill: none;
+  pointer-events: stroke;
+  stroke: transparent;
+  stroke-linecap: square;
+  stroke-linejoin: round;
+  stroke-width: 16;
+}
+
+.metric-chart-svg:has(.metric-series:hover) .metric-series:not(:hover) .metric-chart-line,
+.metric-chart-svg:has(.metric-series:hover) .metric-series:not(:hover) .metric-chart-point {
+  opacity: 0.28;
+}
+
+.metric-series:hover .metric-chart-line {
+  stroke: oklch(94% 0.004 260);
+  stroke-width: 4;
+}
+
+.metric-series:hover .metric-chart-point circle {
+  fill: oklch(94% 0.004 260);
+  stroke: oklch(94% 0.004 260);
 }
 
 .metric-chart-point circle {
   fill: oklch(7.5% 0.004 260);
-  stroke: oklch(86% 0.01 260);
+  stroke: var(--series-color, oklch(86% 0.01 260));
   stroke-width: 2;
   transition:
     fill 160ms ease-out,
@@ -292,9 +295,25 @@ h2 {
 }
 
 .metric-chart-point:hover circle {
-  fill: oklch(88% 0.01 260);
-  stroke: oklch(88% 0.01 260);
+  fill: var(--series-color, oklch(88% 0.01 260));
+  stroke: var(--series-color, oklch(88% 0.01 260));
   transform: scale(1.55);
+}
+
+.metric-distance {
+  --series-color: oklch(86% 0.004 260);
+}
+
+.metric-time {
+  --series-color: oklch(70% 0.004 260);
+}
+
+.metric-bpm {
+  --series-color: oklch(56% 0.004 260);
+}
+
+.metric-power {
+  --series-color: oklch(42% 0.004 260);
 }
 
 .metric-chart-axis {
@@ -305,6 +324,26 @@ h2 {
   justify-content: space-between;
   line-height: 1;
   padding: 0 4px;
+}
+
+.metric-chart-tooltip {
+  background: oklch(92% 0.008 260);
+  border-radius: 4px;
+  color: oklch(12% 0.006 260);
+  font-size: 0.78rem;
+  font-weight: 800;
+  left: 0;
+  line-height: 1;
+  min-width: 92px;
+  padding: 7px 8px;
+  pointer-events: none;
+  position: absolute;
+  text-align: left;
+  top: 0;
+  transform: translate(-50%, calc(-100% - 10px)) scale(0.8);
+  transform-origin: bottom center;
+  white-space: pre;
+  z-index: 10;
 }
 
 @media (max-width: 760px) {
@@ -336,27 +375,22 @@ h2 {
     line-height: 1.35;
   }
 
-  .year-legend-row {
-    padding-left: 24px;
-  }
-
-  .legend {
-    margin-left: 0;
-  }
-
-  .metric-chart-grid {
-    gap: 10px;
-    grid-template-columns: 1fr;
+  .combined-metric-chart {
     margin-top: 14px;
-    padding-left: 0;
+    width: 100%;
   }
 
   .metric-chart {
     padding: 9px 8px 7px;
   }
 
-  .metric-chart-header strong {
+  .metric-chart-header > strong {
     font-size: 0.9rem;
+  }
+
+  .metric-chart-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .calendar-wrap {

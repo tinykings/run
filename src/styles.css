@@ -43,6 +43,14 @@ h2 {
   margin-bottom: 0;
 }
 
+h3 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
 .year-heading {
   align-items: baseline;
   display: flex;
@@ -237,13 +245,25 @@ h2 {
   line-height: 1;
 }
 
-.route-map {
+.year-visuals {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
+  margin: 20px 0 0 28px;
+  max-width: none;
+}
+
+.route-map,
+.metric-graph {
   background: oklch(8% 0.004 260);
   border: 1px solid oklch(17% 0.004 260);
-  margin: 20px 0 0 28px;
-  max-width: 960px;
   overflow: visible;
   position: relative;
+}
+
+.route-map {
+  align-items: center;
+  display: flex;
 }
 
 .route-map-svg {
@@ -328,6 +348,70 @@ h2 {
   fill: currentColor;
 }
 
+.metric-graph {
+  min-width: 0;
+  padding: 4px 10px 8px;
+}
+
+.metric-graph-svg {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.metric-grid line {
+  stroke: oklch(14% 0.004 260);
+  stroke-width: 1;
+}
+
+.metric-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.35;
+}
+
+.metric-distance {
+  color: oklch(60% 0.005 260);
+}
+
+.metric-time {
+  color: oklch(52% 0.005 260);
+  stroke-dasharray: 7 4;
+}
+
+.metric-bpm {
+  color: oklch(45% 0.005 260);
+  stroke-dasharray: 2 4;
+}
+
+.metric-power {
+  color: oklch(38% 0.005 260);
+  stroke-dasharray: 10 3 2 3;
+}
+
+.metric-elevation {
+  color: oklch(32% 0.005 260);
+  stroke-dasharray: 4 4;
+}
+
+.metric-speed {
+  color: oklch(66% 0.005 260);
+  stroke-width: 1.65;
+}
+
+.metric-cursor {
+  stroke: oklch(64% 0.005 260);
+  stroke-width: 1;
+}
+
+.metric-dot {
+  fill: oklch(8% 0.004 260);
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
 @media (max-width: 760px) {
   :root {
     --cell: 16px;
@@ -401,7 +485,8 @@ h2 {
     display: none;
   }
 
-  .route-map {
+  .year-visuals {
+    grid-template-columns: 1fr;
     margin: 16px 0 0;
     max-width: none;
   }

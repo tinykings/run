@@ -24,6 +24,33 @@ body {
   padding: 18px 10px;
 }
 
+.total-summary {
+  align-items: center;
+  display: flex;
+  gap: 36px;
+  justify-content: center;
+  margin: 4px auto 30px;
+  text-align: center;
+}
+
+.total-summary div {
+  display: grid;
+  gap: 4px;
+}
+
+.total-summary span {
+  color: oklch(58% 0.01 260);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.total-summary strong {
+  color: oklch(91% 0.01 260);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
 h1,
 h2,
 h3,
@@ -87,6 +114,8 @@ h2 {
   flex-wrap: wrap;
   font-weight: 700;
   gap: 8px;
+  margin-top: 14px;
+  padding-left: 28px;
 }
 
 .legend {
@@ -225,6 +254,15 @@ h2 {
     padding: 16px 12px 28px;
   }
 
+  .total-summary {
+    gap: 22px;
+    margin-bottom: 26px;
+  }
+
+  .total-summary strong {
+    font-size: 1.2rem;
+  }
+
   .year-card-header {
     align-items: flex-start;
     flex-direction: column;
@@ -237,6 +275,7 @@ h2 {
     font-size: 0.92rem;
     gap: 6px 8px;
     line-height: 1.35;
+    padding-left: 24px;
   }
 
   .legend {

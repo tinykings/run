@@ -17,9 +17,21 @@ const WEEK_DAYS = ["S", "M", "T", "W", "T", "F", "S"];
 export default function App() {
   const runsByDate = useMemo(() => getRunsByDate(data), []);
   const years = useMemo(() => getYearOptions(runsByDate.values()), [runsByDate]);
+  const totalStats = useMemo(() => getRunStats(runsByDate.values()), [runsByDate]);
 
   return (
     <main className="app">
+      <section className="total-summary" aria-label="Total running activity">
+        <div>
+          <span>Total Distance</span>
+          <strong>{formatDistance(totalStats.totalDistanceKm)}</strong>
+        </div>
+        <div>
+          <span>Total Time</span>
+          <strong>{formatDuration(totalStats.totalDurationSec)}</strong>
+        </div>
+      </section>
+
       {years.map((year) => (
         <YearCard key={year} runsByDate={runsByDate} year={year} />
       ))}
@@ -52,19 +64,7 @@ function YearCard({
     <section className="year-card" aria-label={`${year} running activity`}>
       <div className="year-card-header">
         <div className="year-title-stack">
-          <span className="year-mark">RRR</span>
           <h2>{year}</h2>
-        </div>
-        <div className="year-total">
-          <span>Distance</span> {formatDistance(yearStats.totalDistanceKm)} <span>Time</span>{" "}
-          {formatDuration(yearStats.totalDurationSec)}
-          <span className="legend" aria-label="Distance intensity legend">
-            Less
-            {[0, 1, 2, 3, 4].map((level) => (
-              <i className={`legend-box intensity-${level}`} key={level} />
-            ))}
-            More
-          </span>
         </div>
       </div>
 
@@ -108,6 +108,18 @@ function YearCard({
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="year-total">
+        <span>Distance</span> {formatDistance(yearStats.totalDistanceKm)} <span>Time</span>{" "}
+        {formatDuration(yearStats.totalDurationSec)}
+        <span className="legend" aria-label="Distance intensity legend">
+          Less
+          {[0, 1, 2, 3, 4].map((level) => (
+            <i className={`legend-box intensity-${level}`} key={level} />
+          ))}
+          More
+        </span>
       </div>
     </section>
   );

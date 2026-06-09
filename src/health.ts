@@ -159,15 +159,11 @@ export function formatDistance(km: number) {
 }
 
 export function formatDuration(totalSeconds: number) {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = Math.round(totalSeconds % 60);
+  const totalMinutes = Math.round(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
-  if (hours > 0) {
-    return `${hours}h ${minutes.toString().padStart(2, "0")}m`;
-  }
-
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  return `${hours}:${minutes.toString().padStart(2, "0")}`;
 }
 
 export function formatPace(secondsPerKm: number | null | undefined) {

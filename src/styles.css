@@ -43,6 +43,20 @@ h2 {
   margin-bottom: 0;
 }
 
+.year-title-stack {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.year-mark {
+  color: oklch(91% 0.01 260);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
 .year-card {
   background: oklch(7.5% 0.004 260);
   border-radius: 2px;
@@ -70,6 +84,7 @@ h2 {
   color: oklch(73% 0.01 260);
   display: flex;
   font-size: 1rem;
+  flex-wrap: wrap;
   font-weight: 700;
   gap: 8px;
 }
@@ -107,6 +122,10 @@ h2 {
   grid-template-rows: repeat(7, var(--cell));
   line-height: var(--cell);
   padding-top: 1px;
+}
+
+.mobile-weekday-labels {
+  display: none;
 }
 
 .calendar-stack {
@@ -191,8 +210,19 @@ h2 {
 }
 
 @media (max-width: 760px) {
+  :root {
+    --cell: 16px;
+    --gap: 3px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
   .app {
-    padding: 16px 8px;
+    max-width: 100%;
+    overflow-x: clip;
+    padding: 16px 12px 28px;
   }
 
   .year-card-header {
@@ -200,5 +230,72 @@ h2 {
     flex-direction: column;
     gap: 6px;
     margin-bottom: 18px;
+  }
+
+  .year-total {
+    align-items: flex-start;
+    font-size: 0.92rem;
+    gap: 6px 8px;
+    line-height: 1.35;
+  }
+
+  .legend {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .calendar-wrap {
+    gap: 6px;
+    grid-template-columns: 18px minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .weekday-labels {
+    display: none;
+  }
+
+  .mobile-weekday-labels {
+    color: oklch(42% 0.01 260);
+    display: grid;
+    font-size: 0.72rem;
+    gap: var(--gap);
+    grid-template-rows: repeat(14, minmax(0, 1fr));
+    line-height: 1;
+    padding-top: 2px;
+    text-align: center;
+  }
+
+  .calendar-stack {
+    gap: 0;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .calendar-grid {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(var(--mobile-columns), minmax(0, 1fr));
+    grid-template-rows: repeat(14, auto);
+    width: 100%;
+  }
+
+  .calendar-grid .day-cell {
+    aspect-ratio: 1;
+    height: auto;
+    width: 100%;
+  }
+
+  .month-labels {
+    display: none;
+  }
+
+  .calendar-grid .day-cell[data-tooltip]:not([data-tooltip=""]):hover {
+    transform: none;
+  }
+
+  .calendar-grid .day-cell[data-tooltip]:not([data-tooltip=""]):hover::after {
+    left: 0;
+    transform: none;
+    white-space: normal;
+    width: max-content;
   }
 }

@@ -46,11 +46,15 @@ function YearCard({
   const yearStats = getRunStats([...runsByDate.values()].filter((day) => day.date.startsWith(String(year))));
   const monthLabels = getMonthLabels(year);
   const weekCount = calendarDays.length / 7;
+  const mobileColumnCount = Math.ceil(weekCount / 2);
 
   return (
     <section className="year-card" aria-label={`${year} running activity`}>
       <div className="year-card-header">
-        <h2>{year}</h2>
+        <div className="year-title-stack">
+          <span className="year-mark">RRR</span>
+          <h2>{year}</h2>
+        </div>
         <div className="year-total">
           <span>Distance</span> {formatDistance(yearStats.totalDistanceKm)} <span>Time</span>{" "}
           {formatDuration(yearStats.totalDurationSec)}
@@ -66,19 +70,29 @@ function YearCard({
 
       <div className="calendar-wrap">
         <div className="weekday-labels" aria-hidden="true">
-          {WEEK_DAYS.map((day) => (
-            <span key={day}>{day}</span>
+          {WEEK_DAYS.map((day, index) => (
+            <span key={`${day}-${index}`}>{day}</span>
           ))}
         </div>
-        <div className="calendar-stack" style={{ "--weeks": weekCount } as CSSProperties}>
+        <div className="mobile-weekday-labels" aria-hidden="true">
+          {[...WEEK_DAYS, ...WEEK_DAYS].map((day, index) => (
+            <span key={`${day}-${index}`}>{day}</span>
+          ))}
+        </div>
+        <div
+          className="calendar-stack"
+          style={{ "--mobile-columns": mobileColumnCount, "--weeks": weekCount } as CSSProperties}
+        >
           <div className="calendar-grid" aria-label={`${year} running activity calendar`}>
             {calendarDays.map((calendarDay, dayIndex) => {
               const intensity = getIntensity(calendarDay.distanceKm);
-              const tooltip = calendarDay.inYear ? `${calendarDay.date}: ${formatDistance(calendarDay.distanceKm)}` : "";
+              const tooltip = calendarDay.day
+                ? `${calendarDay.date}: ${formatDistance(calendarDay.distanceKm)}`
+                : undefined;
 
               return (
                 <span
-                  aria-label={tooltip || "Empty calendar cell"}
+                  aria-label={tooltip ?? (calendarDay.inYear ? `${calendarDay.date}: no running data` : "Empty calendar cell")}
                   className={`day-cell intensity-${intensity}`}
                   data-tooltip={tooltip}
                   key={`${calendarDay.date}-${dayIndex}`}

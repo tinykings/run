@@ -300,48 +300,48 @@ h3 {
 }
 
 .route-layer {
-  color: oklch(56% 0.006 260);
+  color: oklch(64% 0.005 260);
   transition: opacity 160ms ease-out;
 }
 
 .route-layer.intensity-1 {
-  color: oklch(24% 0.005 260);
+  color: oklch(52% 0.005 260);
 }
 
 .route-layer.intensity-2 {
-  color: oklch(30% 0.005 260);
+  color: oklch(55% 0.005 260);
 }
 
 .route-layer.intensity-3 {
-  color: oklch(36% 0.005 260);
+  color: oklch(58% 0.005 260);
 }
 
 .route-layer.intensity-4 {
-  color: oklch(42% 0.006 260);
+  color: oklch(61% 0.005 260);
 }
 
 .route-layer.intensity-5 {
-  color: oklch(48% 0.006 260);
+  color: oklch(64% 0.005 260);
 }
 
 .route-layer.intensity-6 {
-  color: oklch(54% 0.006 260);
+  color: oklch(67% 0.005 260);
 }
 
 .route-layer.intensity-7 {
-  color: oklch(60% 0.006 260);
+  color: oklch(70% 0.005 260);
 }
 
 .route-layer.intensity-8 {
-  color: oklch(66% 0.006 260);
+  color: oklch(73% 0.005 260);
 }
 
 .route-layer.intensity-9 {
-  color: oklch(72% 0.006 260);
+  color: oklch(76% 0.005 260);
 }
 
 .route-layer.intensity-10 {
-  color: oklch(78% 0.006 260);
+  color: oklch(78% 0.005 260);
 }
 
 .route-hidden {

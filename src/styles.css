@@ -20,7 +20,7 @@ body {
 
 .app {
   margin: 0 auto;
-  max-width: 1240px;
+  max-width: 1500px;
   padding: 18px 10px;
 }
 
@@ -244,13 +244,14 @@ h3 {
 .year-visuals {
   display: grid;
   gap: 14px;
-  grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
+  grid-template-columns: minmax(0, 0.72fr) minmax(300px, 0.78fr) minmax(360px, 0.86fr);
   margin: 20px 0 0 28px;
   max-width: none;
 }
 
 .route-map,
-.metric-graph {
+.metric-graph,
+.weather-graph {
   background: oklch(8% 0.004 260);
   border: 1px solid oklch(17% 0.004 260);
   overflow: visible;
@@ -276,19 +277,22 @@ h3 {
   width: 100%;
 }
 
-.metric-graph {
+.metric-graph,
+.weather-graph {
   display: grid;
   grid-template-rows: auto 1fr;
   min-width: 0;
   padding: 0 10px 8px;
 }
 
-.metric-graph .visual-heading {
+.metric-graph .visual-heading,
+.weather-graph .visual-heading {
   margin-left: 0;
   margin-right: 0;
 }
 
-.metric-graph-svg {
+.metric-graph-svg,
+.weather-graph-svg {
   display: block;
   align-self: center;
   height: auto;
@@ -422,6 +426,56 @@ h3 {
   fill: oklch(8% 0.004 260);
   stroke: currentColor;
   stroke-width: 1.8;
+}
+
+.weather-baseline {
+  stroke: oklch(14% 0.004 260);
+  stroke-width: 1;
+}
+
+.weather-label,
+.weather-count {
+  dominant-baseline: middle;
+  fill: oklch(52% 0.01 260);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.weather-label {
+  text-anchor: end;
+}
+
+.weather-range {
+  fill: oklch(41% 0.01 260);
+  font-weight: 700;
+}
+
+.weather-count {
+  fill: oklch(58% 0.01 260);
+  text-anchor: start;
+}
+
+.weather-row {
+  color: oklch(62% 0.006 260);
+  transition: opacity 160ms ease-out;
+}
+
+.weather-bar {
+  fill: currentColor;
+}
+
+.weather-muted {
+  opacity: 0.12;
+}
+
+.weather-active {
+  color: oklch(84% 0.007 260);
+  opacity: 1;
+}
+
+.weather-active .weather-count,
+.weather-active .weather-label {
+  fill: oklch(88% 0.01 260);
 }
 
 @media (max-width: 760px) {

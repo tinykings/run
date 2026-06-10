@@ -20,6 +20,27 @@ const METRIC_GRAPH_WIDTH = 520;
 const METRIC_GRAPH_HEIGHT = 240;
 const METRIC_GRAPH_PADDING = { top: 18, right: 16, bottom: 28, left: 24 };
 const METRIC_KEYS = ["distance", "time", "bpm", "power", "elevation", "speed"] as const;
+type WeatherTemperatureBin = {
+  label: string;
+  rangeLabel: string;
+  min?: number;
+  max?: number;
+};
+const WEATHER_GRAPH_WIDTH = 420;
+const WEATHER_GRAPH_ROW_HEIGHT = 32;
+const WEATHER_GRAPH_BAR_HEIGHT = 14;
+const WEATHER_GRAPH_PADDING = { top: 14, right: 42, bottom: 10, left: 92 };
+const WEATHER_TEMPERATURE_BINS = [
+  { label: "Frigid", rangeLabel: "< 20 F", max: 20 },
+  { label: "Very Cold", rangeLabel: "20-29 F", min: 20, max: 30 },
+  { label: "Cold", rangeLabel: "30-39 F", min: 30, max: 40 },
+  { label: "Cool", rangeLabel: "40-49 F", min: 40, max: 50 },
+  { label: "Mild", rangeLabel: "50-59 F", min: 50, max: 60 },
+  { label: "Comfortable", rangeLabel: "60-69 F", min: 60, max: 70 },
+  { label: "Warm", rangeLabel: "70-79 F", min: 70, max: 80 },
+  { label: "Hot", rangeLabel: "80-89 F", min: 80, max: 90 },
+  { label: "Very Hot", rangeLabel: ">= 90 F", min: 90 },
+] as const satisfies readonly WeatherTemperatureBin[];
 const TOOLTIP_OFFSET = 14;
 const TOOLTIP_VIEWPORT_MARGIN = 12;
 const TOOLTIP_ESTIMATED_WIDTH = 128;
@@ -211,6 +232,7 @@ function YearCard({
       <div className="year-visuals">
         <RouteMap activeDate={activeDate} days={yearDays} />
         <MetricGraph activeDate={activeDate} days={yearDays} />
+        <WeatherGraph activeDate={activeDate} days={yearDays} />
       </div>
 
     </section>
@@ -480,6 +502,115 @@ function getMetricGraphX(time: number, dateRange: { min: number; max: number }, 
   return METRIC_GRAPH_PADDING.left + Math.min(Math.max(progress, 0), 1) * drawableWidth;
 }
 
+type WeatherGraphBin = WeatherTemperatureBin & {
+  count: number;
+  active: boolean;
+};
+
+function WeatherGraph({
+  activeDate,
+  days,
+}: {
+  activeDate: string | null;
+  days: DayRuns[];
+}) {
+  const bins = getWeatherGraphBins(days, activeDate).filter((bin) => bin.count > 0);
+  const totalRunsWithWeather = bins.reduce((total, bin) => total + bin.count, 0);
+
+  if (totalRunsWithWeather === 0) {
+    return null;
+  }
+
+  const maxCount = Math.max(...bins.map((bin) => bin.count), 1);
+  const drawableWidth = WEATHER_GRAPH_WIDTH - WEATHER_GRAPH_PADDING.left - WEATHER_GRAPH_PADDING.right;
+  const graphHeight = WEATHER_GRAPH_PADDING.top + WEATHER_GRAPH_PADDING.bottom + WEATHER_GRAPH_ROW_HEIGHT * bins.length;
+  const hasActiveBin = bins.some((bin) => bin.active);
+
+  return (
+    <section className="weather-graph" aria-label="Run count by temperature group">
+      <h3 className="visual-heading">Temps</h3>
+      <svg className="weather-graph-svg" viewBox={`0 0 ${WEATHER_GRAPH_WIDTH} ${graphHeight}`} role="img">
+        <title>Run count by temperature group</title>
+        <line
+          className="weather-baseline"
+          x1={WEATHER_GRAPH_PADDING.left}
+          x2={WEATHER_GRAPH_PADDING.left}
+          y1={WEATHER_GRAPH_PADDING.top}
+          y2={graphHeight - WEATHER_GRAPH_PADDING.bottom}
+        />
+
+        {bins.map((bin, index) => {
+          const y = WEATHER_GRAPH_PADDING.top + index * WEATHER_GRAPH_ROW_HEIGHT + (WEATHER_GRAPH_ROW_HEIGHT - WEATHER_GRAPH_BAR_HEIGHT) / 2;
+          const barWidth = getWeatherGraphBarWidth(bin.count, maxCount, drawableWidth);
+          const muted = hasActiveBin && !bin.active;
+
+          return (
+            <g className={`weather-row${bin.active ? " weather-active" : ""}${muted ? " weather-muted" : ""}`} key={bin.label}>
+              <text className="weather-label" x={WEATHER_GRAPH_PADDING.left - 10} y={y + WEATHER_GRAPH_BAR_HEIGHT / 2 - 5}>
+                <tspan x={WEATHER_GRAPH_PADDING.left - 10}>{bin.label}</tspan>
+                <tspan className="weather-range" dy="12" x={WEATHER_GRAPH_PADDING.left - 10}>
+                  {bin.rangeLabel}
+                </tspan>
+              </text>
+              <rect
+                className="weather-bar"
+                height={WEATHER_GRAPH_BAR_HEIGHT}
+                rx="1"
+                width={barWidth}
+                x={WEATHER_GRAPH_PADDING.left}
+                y={y}
+              />
+              <text className="weather-count" x={WEATHER_GRAPH_PADDING.left + barWidth + 8} y={y + WEATHER_GRAPH_BAR_HEIGHT / 2}>
+                {bin.count}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </section>
+  );
+}
+
+function getWeatherGraphBins(days: DayRuns[], activeDate: string | null): WeatherGraphBin[] {
+  const bins = WEATHER_TEMPERATURE_BINS.map((bin) => ({ ...bin, count: 0, active: false }));
+
+  for (const day of days) {
+    for (const run of day.runs) {
+      const temperatureF = getRunTemperatureF(run);
+      const bin = temperatureF === null ? undefined : bins.find((candidate) => isTemperatureInBin(temperatureF, candidate));
+
+      if (!bin) {
+        continue;
+      }
+
+      bin.count += 1;
+
+      if (day.date === activeDate) {
+        bin.active = true;
+      }
+    }
+  }
+
+  return bins;
+}
+
+function getRunTemperatureF(run: Run) {
+  const temperatureC = run.temperatureC ?? run.weatherTemperatureC;
+
+  return temperatureC === undefined || !Number.isFinite(temperatureC) ? null : (temperatureC * 9) / 5 + 32;
+}
+
+function isTemperatureInBin(temperatureF: number, bin: WeatherTemperatureBin) {
+  const aboveMin = bin.min === undefined || temperatureF >= bin.min;
+  const belowMax = bin.max === undefined || temperatureF < bin.max;
+
+  return aboveMin && belowMax;
+}
+
+function getWeatherGraphBarWidth(count: number, maxCount: number, drawableWidth: number) {
+  return count === 0 ? 0 : Math.max(2, (count / maxCount) * drawableWidth);
+}
+
 function formatHeartRate(heartRate: number | null | undefined) {
   if (heartRate === null || heartRate === undefined || !Number.isFinite(heartRate)) {
     return "--";
@@ -528,13 +659,12 @@ function formatTooltipDuration(totalSeconds: number) {
   return hours > 0 ? `${hours}h:${minutes}m` : `${minutes} min`;
 }
 
-function getDayTooltip(date: string, day: { distanceKm: number; durationSec: number; humidityPercent: number | null; runs: Run[]; temperatureF: number | null }) {
+function getDayTooltip(date: string, day: { distanceKm: number; durationSec: number; runs: Run[]; temperatureF: number | null }) {
   return [
     formatTooltipDate(date),
     formatDistance(day.distanceKm),
     formatTooltipDuration(day.durationSec),
     formatTemperatureF(day.temperatureF),
-    formatHumidity(day.humidityPercent),
     formatAverage(day.runs, "avgHeartRate", "bpm"),
     formatAverage(day.runs, "intensity", "pwr"),
     formatElevation(getTotalElevationGain(day.runs)),
@@ -548,14 +678,6 @@ function formatTemperatureF(temperatureF: number | null | undefined) {
   }
 
   return `${Math.round(temperatureF)} F`;
-}
-
-function formatHumidity(humidityPercent: number | null | undefined) {
-  if (humidityPercent === null || humidityPercent === undefined || !Number.isFinite(humidityPercent)) {
-    return "--%";
-  }
-
-  return `${Math.round(humidityPercent)}%`;
 }
 
 function formatAverage(

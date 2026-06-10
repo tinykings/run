@@ -23,7 +23,6 @@ export type HealthWorkout = {
   durationSec?: number;
   elevationAscendedM?: number;
   end?: string;
-  humidityPercent?: number;
   id?: string;
   intensity?: number;
   isIndoor?: boolean;
@@ -36,7 +35,6 @@ export type HealthWorkout = {
   temperatureC?: number;
   totalEnergyKcal?: number;
   type?: string;
-  weatherHumidityPercent?: number;
   weatherTemperatureC?: number;
 };
 
@@ -53,7 +51,6 @@ type HealthAutoExportWorkout = {
   duration?: number;
   elevationUp?: Quantity;
   end?: string;
-  humidity?: Quantity;
   id?: string;
   intensity?: Quantity;
   isIndoor?: boolean;
@@ -88,7 +85,6 @@ export type DayRuns = {
   distanceKm: number;
   durationSec: number;
   temperatureF: number | null;
-  humidityPercent: number | null;
 };
 
 export type RunStats = {
@@ -141,7 +137,6 @@ export function getRunsByDate(data: HealthExport) {
       distanceKm: 0,
       durationSec: 0,
       temperatureF: null,
-      humidityPercent: null,
     };
 
     day.runs.push(run);
@@ -157,7 +152,6 @@ export function getRunsByDate(data: HealthExport) {
 
       return temperatureC === undefined ? undefined : (temperatureC * 9) / 5 + 32;
     });
-    day.humidityPercent = getWeightedWeatherAverage(day.runs, (run) => run.humidityPercent ?? run.weatherHumidityPercent);
   }
 
   return byDate;
@@ -275,14 +269,6 @@ export function formatTemperature(celsius: number | null | undefined) {
   return `${celsius.toFixed(1)} C`;
 }
 
-export function formatHumidity(percent: number | null | undefined) {
-  if (percent === null || percent === undefined || !Number.isFinite(percent)) {
-    return "--%";
-  }
-
-  return `${Math.round(percent)}%`;
-}
-
 export function formatDay(date: string) {
   return new Intl.DateTimeFormat(undefined, {
     weekday: "long",
@@ -347,7 +333,6 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
   const durationSec = workout.duration ?? 0;
   const activeEnergyKcal = convertEnergyToKcal(workout.activeEnergyBurned);
   const temperatureC = workout.temperature?.qty;
-  const humidityPercent = workout.humidity?.qty;
 
   return [
     {
@@ -359,7 +344,6 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
       durationSec,
       elevationAscendedM: workout.elevationUp?.qty,
       end: toIsoWithOffset(workout.end),
-      humidityPercent,
       id: workout.id,
       intensity: workout.intensity?.qty,
       isIndoor: workout.isIndoor ?? workout.name.includes("Indoor"),
@@ -372,7 +356,6 @@ function normalizeHealthAutoExportWorkout(workout: HealthAutoExportWorkout): Hea
       temperatureC,
       totalEnergyKcal: activeEnergyKcal,
       type: "Running",
-      weatherHumidityPercent: humidityPercent,
       weatherTemperatureC: temperatureC,
     },
   ];

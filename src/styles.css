@@ -210,30 +210,26 @@ h3 {
   background: oklch(78% 0.006 260);
 }
 
-.day-cell[data-tooltip]:not([data-tooltip=""]):hover {
+.day-cell.has-tooltip:hover {
   box-shadow: 0 0 0 1px oklch(90% 0.01 260), 0 10px 24px oklch(0% 0 0 / 55%);
   transform: scale(1.45);
   z-index: 5;
 }
 
-.day-cell[data-tooltip]:not([data-tooltip=""]):hover::after {
+.cursor-tooltip {
   background: oklch(92% 0.008 260);
   border-radius: 4px;
-  bottom: calc(100% + 10px);
   color: oklch(12% 0.006 260);
-  content: attr(data-tooltip);
   font-size: 0.78rem;
   font-weight: 800;
-  left: 50%;
   line-height: 1;
   min-width: 92px;
   padding: 7px 8px;
   pointer-events: none;
-  position: absolute;
-  transform: translateX(-50%) scale(0.8);
-  transform-origin: bottom center;
+  position: fixed;
   text-align: left;
   white-space: pre;
+  z-index: 100;
 }
 
 .month-labels {
@@ -507,14 +503,7 @@ h3 {
     max-width: none;
   }
 
-  .calendar-grid .day-cell[data-tooltip]:not([data-tooltip=""]):hover {
+  .calendar-grid .day-cell.has-tooltip:hover {
     transform: none;
-  }
-
-  .calendar-grid .day-cell[data-tooltip]:not([data-tooltip=""]):hover::after {
-    left: 0;
-    transform: none;
-    white-space: normal;
-    width: max-content;
   }
 }

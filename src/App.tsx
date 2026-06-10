@@ -1,6 +1,7 @@
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, type MouseEvent, useEffect, useMemo, useState } from "react";
 import { buildCalendarDays, getIntensity } from "./calendar";
 import {
+  type DayRuns,
   type HealthExport,
   type Run,
   formatDistance,
@@ -19,6 +20,10 @@ const METRIC_GRAPH_WIDTH = 520;
 const METRIC_GRAPH_HEIGHT = 240;
 const METRIC_GRAPH_PADDING = { top: 18, right: 16, bottom: 28, left: 24 };
 const METRIC_KEYS = ["distance", "time", "bpm", "power", "elevation", "speed"] as const;
+const TOOLTIP_OFFSET = 14;
+const TOOLTIP_VIEWPORT_MARGIN = 12;
+const TOOLTIP_ESTIMATED_WIDTH = 128;
+const TOOLTIP_ESTIMATED_HEIGHT = 142;
 
 export default function App() {
   const [data, setData] = useState<HealthExport | null>(null);
@@ -116,6 +121,21 @@ function YearCard({
   const weekCount = calendarDays.length / 7;
   const mobileColumnCount = Math.ceil(weekCount / 2);
   const [activeDate, setActiveDate] = useState<string | null>(null);
+  const [cursorTooltip, setCursorTooltip] = useState<CursorTooltip | null>(null);
+
+  function showDayTooltip(date: string, text: string, event: MouseEvent<HTMLElement>) {
+    setActiveDate(date);
+    setCursorTooltip({ text, ...getCursorTooltipPosition(event) });
+  }
+
+  function moveDayTooltip(event: MouseEvent<HTMLElement>) {
+    setCursorTooltip((tooltip) => (tooltip ? { ...tooltip, ...getCursorTooltipPosition(event) } : tooltip));
+  }
+
+  function hideDayTooltip() {
+    setActiveDate(null);
+    setCursorTooltip(null);
+  }
 
   return (
     <section className="year-card" aria-label={`${year} running activity`}>
@@ -160,11 +180,11 @@ function YearCard({
               return (
                 <span
                   aria-label={tooltip ?? (calendarDay.inYear ? `${calendarDay.date}: no running data` : "Empty calendar cell")}
-                  className={`day-cell intensity-${intensity}`}
-                  data-tooltip={tooltip}
+                  className={`day-cell intensity-${intensity}${tooltip ? " has-tooltip" : ""}`}
                   key={`${calendarDay.date}-${dayIndex}`}
-                  onMouseEnter={() => calendarDay.day && setActiveDate(calendarDay.date)}
-                  onMouseLeave={() => setActiveDate(null)}
+                  onMouseEnter={(event) => tooltip && showDayTooltip(calendarDay.date, tooltip, event)}
+                  onMouseLeave={hideDayTooltip}
+                  onMouseMove={moveDayTooltip}
                 />
               );
             })}
@@ -178,6 +198,15 @@ function YearCard({
           </div>
         </div>
       </div>
+      {cursorTooltip && (
+        <div
+          aria-hidden="true"
+          className="cursor-tooltip"
+          style={{ left: cursorTooltip.x, top: cursorTooltip.y }}
+        >
+          {cursorTooltip.text}
+        </div>
+      )}
 
       <div className="year-visuals">
         <RouteMap activeDate={activeDate} days={yearDays} />
@@ -188,12 +217,32 @@ function YearCard({
   );
 }
 
+type CursorTooltip = {
+  text: string;
+  x: number;
+  y: number;
+};
+
+function getCursorTooltipPosition(event: MouseEvent<HTMLElement>) {
+  const rightSideX = event.clientX + TOOLTIP_OFFSET;
+  const leftSideX = event.clientX - TOOLTIP_OFFSET - TOOLTIP_ESTIMATED_WIDTH;
+  const hasRoomRight = rightSideX + TOOLTIP_ESTIMATED_WIDTH <= window.innerWidth - TOOLTIP_VIEWPORT_MARGIN;
+  const x = hasRoomRight ? rightSideX : Math.max(TOOLTIP_VIEWPORT_MARGIN, leftSideX);
+  const maxTop = Math.max(TOOLTIP_VIEWPORT_MARGIN, window.innerHeight - TOOLTIP_ESTIMATED_HEIGHT - TOOLTIP_VIEWPORT_MARGIN);
+  const y = Math.min(
+    Math.max(event.clientY + TOOLTIP_OFFSET, TOOLTIP_VIEWPORT_MARGIN),
+    maxTop,
+  );
+
+  return { x, y };
+}
+
 function RouteMap({
   activeDate,
   days,
 }: {
   activeDate: string | null;
-  days: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[];
+  days: DayRuns[];
 }) {
   const routes = getRouteMapRoutes(days);
 
@@ -263,7 +312,7 @@ function MetricGraph({
   days,
 }: {
   activeDate: string | null;
-  days: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[];
+  days: DayRuns[];
 }) {
   const points = getMetricGraphPoints(days);
 
@@ -329,7 +378,7 @@ function MetricGraph({
   );
 }
 
-function getMetricGraphPoints(days: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[]): MetricGraphPoint[] {
+function getMetricGraphPoints(days: DayRuns[]): MetricGraphPoint[] {
   return days.map((day) => ({
     date: day.date,
     timestamp: Date.parse(`${day.date}T00:00:00Z`),
@@ -479,16 +528,34 @@ function formatTooltipDuration(totalSeconds: number) {
   return hours > 0 ? `${hours}h:${minutes}m` : `${minutes} min`;
 }
 
-function getDayTooltip(date: string, day: { distanceKm: number; durationSec: number; runs: Run[] }) {
+function getDayTooltip(date: string, day: { distanceKm: number; durationSec: number; humidityPercent: number | null; runs: Run[]; temperatureF: number | null }) {
   return [
     formatTooltipDate(date),
     formatDistance(day.distanceKm),
     formatTooltipDuration(day.durationSec),
+    formatTemperatureF(day.temperatureF),
+    formatHumidity(day.humidityPercent),
     formatAverage(day.runs, "avgHeartRate", "bpm"),
     formatAverage(day.runs, "intensity", "pwr"),
     formatElevation(getTotalElevationGain(day.runs)),
     formatSpeedMph(getAverageSpeedKmh(day.runs)),
   ].join("\n");
+}
+
+function formatTemperatureF(temperatureF: number | null | undefined) {
+  if (temperatureF === null || temperatureF === undefined || !Number.isFinite(temperatureF)) {
+    return "-- F";
+  }
+
+  return `${Math.round(temperatureF)} F`;
+}
+
+function formatHumidity(humidityPercent: number | null | undefined) {
+  if (humidityPercent === null || humidityPercent === undefined || !Number.isFinite(humidityPercent)) {
+    return "--%";
+  }
+
+  return `${Math.round(humidityPercent)}%`;
 }
 
 function formatAverage(
@@ -571,7 +638,7 @@ type RouteMapPoint = {
   longitude: number;
 };
 
-function getRouteMapRoutes(days: { date: string; distanceKm: number; durationSec: number; runs: Run[] }[]) {
+function getRouteMapRoutes(days: DayRuns[]) {
   return days.flatMap((day) =>
     day.runs.flatMap((run, index) => {
       if (!run.route || run.route.length < 2) {

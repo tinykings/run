@@ -87,6 +87,8 @@ export type DayRuns = {
   runs: Run[];
   distanceKm: number;
   durationSec: number;
+  temperatureF: number | null;
+  humidityPercent: number | null;
 };
 
 export type RunStats = {
@@ -133,7 +135,14 @@ export function getRunsByDate(data: HealthExport) {
     const durationSec = workout.durationSec ?? 0;
     const date = formatDateInTimeZone(workout.startLocal ?? workout.start, timeZone);
     const run: Run = { ...workout, date, distanceKm, durationSec, start: workout.start };
-    const day = byDate.get(date) ?? { date, runs: [], distanceKm: 0, durationSec: 0 };
+    const day = byDate.get(date) ?? {
+      date,
+      runs: [],
+      distanceKm: 0,
+      durationSec: 0,
+      temperatureF: null,
+      humidityPercent: null,
+    };
 
     day.runs.push(run);
     day.distanceKm += distanceKm;
@@ -143,9 +152,33 @@ export function getRunsByDate(data: HealthExport) {
 
   for (const day of byDate.values()) {
     day.runs.sort((a, b) => a.start.localeCompare(b.start));
+    day.temperatureF = getWeightedWeatherAverage(day.runs, (run) => {
+      const temperatureC = run.temperatureC ?? run.weatherTemperatureC;
+
+      return temperatureC === undefined ? undefined : (temperatureC * 9) / 5 + 32;
+    });
+    day.humidityPercent = getWeightedWeatherAverage(day.runs, (run) => run.humidityPercent ?? run.weatherHumidityPercent);
   }
 
   return byDate;
+}
+
+function getWeightedWeatherAverage(runs: Run[], getValue: (run: Run) => number | undefined) {
+  let weightedTotal = 0;
+  let totalDuration = 0;
+
+  for (const run of runs) {
+    const value = getValue(run);
+
+    if (value === undefined || !Number.isFinite(value)) {
+      continue;
+    }
+
+    weightedTotal += value * run.durationSec;
+    totalDuration += run.durationSec;
+  }
+
+  return totalDuration > 0 ? weightedTotal / totalDuration : null;
 }
 
 export function getRunStats(days: Iterable<DayRuns>): RunStats {
